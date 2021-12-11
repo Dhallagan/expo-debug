@@ -1,21 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from "react";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "./constants";
+import HypeHeader from "./components/HypeHeader";
+import ProgressAvatar from "./components/ProgressAvatar";
+import images from "./assets";
+import colors from "./constants/colors";
+import { NavigationContainer } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import LoginScreen from "./screens/LoginScreen";
+import HomeScreen from "./navigation/BottomNavigator";
+import { AuthenticationSwitch } from "./navigation/AuthenticationSwitch";
+import { StatusBar } from "react-native";
+import { createClient, defaultExchanges, Provider } from "urql";
+import { devtoolsExchange } from "@urql/devtools";
+
+StatusBar.setBarStyle("light-content");
+
+const client = createClient({
+  url: "https://metaphysics-production.artsy.net/v2",
+  exchanges: [devtoolsExchange, ...defaultExchanges],
+});
 
 export default function App() {
+  const [validate, setValidate] = React.useState(false);
+  useEffect(() => {
+    async function fetchData() {
+      console.log("useEffect");
+      const res = await fetch("https://api2-dev.betkarma.com/articles");
+      const json = await res.json();
+      console.log("articles", json);
+    }
+    fetchData();
+  }, []);
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider value={client}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <StatusBar barStyle="light-content" />
+          <AuthenticationSwitch />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
