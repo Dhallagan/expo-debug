@@ -11,10 +11,26 @@ import {
   TextInput,
 } from "react-native";
 import { colors } from "../constants/dogeStyle";
+
+import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
 import { images } from "../assets/";
+import { Formik } from "formik";
+import { Button } from "../components/Button";
+import { useStore } from "../store/useTokenStore";
 
 export default function LoginScreen() {
+  // const handleLogin = ({ username, password }) => {
+  //   // const login = useStore((state) => state.login);
+  //   // alert(login);
+  //   // try {
+  //   //   login();
+  //   // } catch (error) {
+  //   //   alert(error);
+  //   // }
+  // };
+  let { login } = useStore();
+
   return (
     <View style={Styles.container}>
       <View style={Styles.logoContainer}>
@@ -55,40 +71,40 @@ export default function LoginScreen() {
         ></View>
       </View>
 
-      <View style={Styles.userNameContainer}>
-        <TextInput
-          style={Styles.userNameInput}
-          placeholder="Username or email"
-          placeholderTextColor={colors.textFaded2}
-        />
-      </View>
-
-      <View style={Styles.passwordContainer}>
-        <TextInput
-          secureTextEntry={true}
-          style={Styles.passwordInput}
-          placeholder="Password"
-          placeholderTextColor={colors.textFaded2}
-        />
-      </View>
+      <Formik initialValues={{ username: "", password: "" }}>
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <>
+            <View style={Styles.userNameContainer}>
+              <TextInput
+                style={Styles.userNameInput}
+                placeholder="Username or email"
+                placeholderTextColor={"white"}
+                onChangeText={handleChange("username")}
+                onBlur={handleBlur("username")}
+                value={values.username}
+              />
+            </View>
+            <View style={Styles.passwordContainer}>
+              <TextInput
+                secureTextEntry={true}
+                style={Styles.passwordInput}
+                placeholder="Password"
+                placeholderTextColor={"white"}
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+                value={values.password}
+              />
+            </View>
+            <Button title="Login" onPress={login} />
+          </>
+        )}
+      </Formik>
 
       <View style={Styles.forgotPasswordContainer}>
         <TouchableOpacity>
           <Text style={Styles.forgotPasswordText}>Forgot password?</Text>
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity>
-        <LinearGradient
-          // Button Linear Gradient
-          colors={["#C03DAE", "#00BFF7"]}
-          style={Styles.loginContainer}
-          start={{ x: 0.0, y: 0.1 }}
-          end={{ x: 1, y: 0.0 }}
-        >
-          <Text style={Styles.text}>Login</Text>
-        </LinearGradient>
-      </TouchableOpacity>
 
       <View style={{ flexDirection: "row", marginTop: 50 }}>
         <View

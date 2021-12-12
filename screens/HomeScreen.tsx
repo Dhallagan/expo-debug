@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useQuery } from "urql";
 import { Button } from "../components/Button";
 import { FeaturedStudioCard } from "../components/FeaturedStudioCard";
 import GradientText from "../components/GradientText";
@@ -9,19 +10,47 @@ import Header from "../components/Header";
 import { HomeAchievementCard } from "../components/HomeAcheivementCard";
 import { HomeChallengeCard } from "../components/HomeChallengeCard";
 import HypeHeader from "../components/HypeHeader";
+import JsonText from "../components/JsonText";
 import { Section } from "../components/Section";
 import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_WIDTH } from "../constants";
 import { colors, fontSize } from "../constants/dogeStyle";
 
+const AuthQuery = `
+  query AuthQuery {
+    me {
+      id
+      username
+      email
+      emailVerified
+      firstName
+      lastName
+      admin
+      picture {
+        url
+      }
+      rank
+      rankProgress
+    }
+  }
+`;
+
 export default function HomeScreen() {
   const inset = useSafeAreaInsets();
+
+  const [result] = useQuery({
+    query: AuthQuery,
+  });
+
+  const { data, fetching, error } = result;
+
   return (
     <>
       <Header />
 
       <ScrollView style={styles.container}>
+        <JsonText obj={data || null} />
         <Section
           title={"Upcoming Sessions"}
           children={

@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   StyleSheet,
@@ -6,6 +7,7 @@ import {
   ImageSourcePropType,
   ViewProps,
   Image,
+  StyleProp,
   ActivityIndicator,
   ViewStyle,
 } from "react-native";
@@ -18,132 +20,50 @@ import {
   smallBold,
 } from "../constants/dogeStyle";
 
-const sizeClassnames = {
-  big: "py-2 px-6 text-sm rounded-lg",
-  small: "px-2 py-1 text-xs rounded-md",
-};
-
-const colorClassnames = {
-  primary: {
-    container: {
-      backgroundColor: colors.accent,
-    },
-    textColor: {
-      color: colors.text,
-    },
-  },
-
-  secondary:
-    "text-button bg-primary-700 hover:bg-primary-600 disabled:text-primary-300",
-};
-
 export type ButtonProps = ViewProps & {
-  iconSrc?: ImageSourcePropType;
-  size?: "big" | "small";
-  color?: "primary" | "secondary";
-  loading?: boolean;
-  disabled?: boolean;
-  title;
+  style?: StyleProp<ViewStyle>;
+  title: String;
   onPress?: () => void;
 };
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  size = "big",
-  color = "primary",
-  disabled = false,
-  loading = false,
-  iconSrc,
-  title,
-  ...props
-}) => {
-  let colorStyle = color === "primary" ? primaryStyle : secondaryStyle;
-  let big = size === "big";
-  let styleSize = big ? bigStyle : smallStyle;
-
+export const Button: React.FC<ButtonProps> = ({ style, title, onPress }) => {
   return (
-    <TouchableOpacity
-      style={[
-        disabled ? colorStyle.disabled : colorStyle.default,
-        styleSize,
-        props.style,
-      ]}
-      onPress={props.onPress}
-      disabled={disabled || loading}
-    >
-      {iconSrc && (
-        <Image
-          source={iconSrc}
-          style={[
-            { tintColor: colors.text, marginRight: 10, width: 20 },
-            loading && { opacity: 0 },
-          ]}
-        />
-      )}
-      <Text
-        style={[
-          big ? colorStyle.text : colorStyle.textSmall,
-          loading && { opacity: 0 },
-        ]}
+    <TouchableOpacity onPress={onPress}>
+      <LinearGradient
+        colors={["#C03DAE", "#00BFF7"]}
+        style={Styles.loginContainer}
+        start={{ x: 0.0, y: 0.1 }}
+        end={{ x: 1, y: 0.0 }}
       >
-        {title}
-      </Text>
-      {/* {loading && (
-        <Spinner style={{ position: "absolute" }} size={big ? "m" : "s"} />
-      )} */}
+        <Text style={Styles.text}>{title}</Text>
+      </LinearGradient>
     </TouchableOpacity>
   );
 };
 
-const containerBase: ViewStyle = {
-  alignSelf: "baseline",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-};
-
-const primaryStyle = StyleSheet.create({
+const Styles = StyleSheet.create({
+  loginContainer: {
+    alignItems: "center",
+    height: 40,
+    marginTop: 30,
+    backgroundColor: "#0088f8",
+    justifyContent: "center",
+    marginStart: 20,
+    marginEnd: 20,
+    borderRadius: 5,
+  },
+  loginText: {
+    color: "#fff",
+  },
+  loginHeader: {
+    color: "#fff",
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 50,
+  },
   text: {
-    ...paragraphBold,
-  },
-  textSmall: {
-    ...smallBold,
-  },
-  default: {
-    ...containerBase,
-    backgroundColor: colors.accent,
-  },
-  disabled: {
-    ...containerBase,
-    backgroundColor: colors.accentDisabled,
+    backgroundColor: "transparent",
+    fontSize: 15,
+    color: "#fff",
   },
 });
-
-const secondaryStyle = StyleSheet.create({
-  text: {
-    ...paragraphBold,
-  },
-  textSmall: {
-    ...smallBold,
-  },
-  default: {
-    ...containerBase,
-    backgroundColor: colors.primary700,
-  },
-  disabled: {
-    ...containerBase,
-    backgroundColor: colors.primary300,
-  },
-});
-
-const smallStyle: ViewStyle = {
-  borderRadius: radius.s,
-  paddingHorizontal: 10,
-};
-
-const bigStyle: ViewStyle = {
-  borderRadius: radius.m,
-  paddingHorizontal: 38,
-  paddingVertical: 8,
-  height: 38,
-};

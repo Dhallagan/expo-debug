@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useQuery,
   useMutation,
@@ -27,21 +27,16 @@ import { devtoolsExchange } from "@urql/devtools";
 StatusBar.setBarStyle("light-content");
 
 const client = createClient({
-  url: "https://metaphysics-production.artsy.net/v2",
+  url: "https://test.thatclass.co/api/",
   exchanges: [devtoolsExchange, ...defaultExchanges],
 });
 
 export default function App() {
   const [validate, setValidate] = React.useState(false);
-  useEffect(() => {
-    async function fetchData() {
-      console.log("useEffect");
-      const res = await fetch("https://api2-dev.betkarma.com/articles");
-      const json = await res.json();
-      console.log("articles", json);
-    }
-    fetchData();
-  }, []);
+
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
   return (
     <Provider value={client}>
       <SafeAreaProvider>

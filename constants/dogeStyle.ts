@@ -46,7 +46,7 @@ export const colors = {
 };
 
 const textBase: TextStyle = {
-  fontFamily: fontFamily.regular,
+  // fontFamily: fontFamily.regular,
   color: colors.text,
 };
 

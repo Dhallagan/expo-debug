@@ -35,7 +35,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({
       <Image source={src} style={styles.image} resizeMode="cover" />
       <Text style={styles.title}>{title}</Text>
       <View style={{ flex: 0, flexDirection: "row" }}>
-        <Chip title="Mantas" />
+        {/* <Chip title="Mantas" outlined={false} /> */}
         {/* <Chip title="20m"/> */}
       </View>
     </TouchableOpacity>
