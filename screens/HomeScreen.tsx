@@ -1,8 +1,10 @@
+import request, { gql } from "graphql-request";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useQuery } from "urql";
+import { useQuery } from "react-query";
+// import { useQuery } from "urql";
 import { Button } from "../components/Button";
 import { FeaturedStudioCard } from "../components/FeaturedStudioCard";
 import GradientText from "../components/GradientText";
@@ -16,6 +18,7 @@ import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_WIDTH } from "../constants";
 import { colors, fontSize } from "../constants/dogeStyle";
+import { useTokenStore } from "../store/useTokenStore";
 
 const AuthQuery = `
   query AuthQuery {
@@ -36,21 +39,40 @@ const AuthQuery = `
   }
 `;
 
+function useAuth() {
+  return useQuery("auth", async () => {
+    return request(
+      "https://test.thatclass.co/api/",
+      gql`
+        query AuthQuery {
+          me {
+            id
+            username
+            email
+            emailVerified
+            firstName
+            lastName
+            admin
+            picture {
+              url
+            }
+            rank
+            rankProgress
+          }
+        }
+      `
+    );
+  });
+}
+
 export default function HomeScreen() {
   const inset = useSafeAreaInsets();
-
-  const [result] = useQuery({
-    query: AuthQuery,
-  });
-
-  const { data, fetching, error } = result;
+  const { status, data, error, isFetching } = useAuth();
 
   return (
     <>
       <Header />
-
       <ScrollView style={styles.container}>
-        <JsonText obj={data || null} />
         <Section
           title={"Upcoming Sessions"}
           children={

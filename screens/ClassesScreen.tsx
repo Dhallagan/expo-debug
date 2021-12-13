@@ -6,45 +6,53 @@ import { Chip } from "../components/Chip";
 import { ClassCard } from "../components/ClassCard";
 import ClassHeader from "../components/ClassHeader";
 import { colors } from "../constants/dogeStyle";
-import { useQuery } from "urql";
 import TitledGradientHeader from "../components/TitleGradientHeader";
+// import { useClasses } from "../queries";
+import JsonText from "../components/JsonText";
+import { useQuery } from "react-query";
+import request, { gql } from "graphql-request";
 
-const ClassesQuery = `
-  query {
-    classes {
-      pageInfo {
-        startCursor
-        endCursor
-      }
-      totalCount
-      edges {
-        node {
-          id
-          title
-          cover {
-            url
+const endpoint = "https://test.thatclass.co/api/";
+
+function useClasses() {
+  return useQuery("classes", async () => {
+    return await request(
+      "https://test.thatclass.co/api/",
+      gql`
+        query {
+          classes {
+            pageInfo {
+              startCursor
+              endCursor
+            }
+            totalCount
+            edges {
+              node {
+                id
+                title
+                cover {
+                  url
+                }
+              }
+            }
           }
         }
-      }
-    }
-  }
-`;
+      `
+    );
+  });
+}
 
 export default function ClassesScreen() {
   const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   const [classes, setClasses] = useState([]);
 
-  const [result] = useQuery({
-    query: ClassesQuery,
-  });
+  const { status, data, error, isFetching } = useClasses();
 
-  const { data, fetching, error } = result;
-
-  if (fetching) {
+  if (status === "loading") {
     return <Text>Loading...</Text>;
   }
-  if (error) {
+  if (status === "error") {
     return <Text>Oh no... {error.message}</Text>;
   }
 
@@ -60,18 +68,19 @@ export default function ClassesScreen() {
         <Chip title="Popular" />
       </View>
       <ScrollView style={styles.container}>
-        {data.classes.edges.map((x: any) => {
-          return (
-            <>
-              <ClassCard
-                key={x.id}
-                id={x.node.id}
-                title={x.node.title}
-                image={x.node.cover?.url}
-              />
-            </>
-          );
-        })}
+        {data &&
+          data.classes.edges.map((x: any) => {
+            return (
+              <>
+                <ClassCard
+                  key={x.id}
+                  id={x.node.id}
+                  title={x.node.title}
+                  image={x.node.cover?.url}
+                />
+              </>
+            );
+          })}
       </ScrollView>
     </>
   );

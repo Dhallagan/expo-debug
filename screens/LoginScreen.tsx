@@ -17,19 +17,49 @@ import { LinearGradient } from "expo-linear-gradient";
 import { images } from "../assets/";
 import { Formik } from "formik";
 import { Button } from "../components/Button";
-import { useStore } from "../store/useTokenStore";
+import { useTokenStore } from "../store/useTokenStore";
+import { useSignIn } from "../queries";
+import { useMutation } from "react-query";
+import request, { gql } from "graphql-request";
+
+const SIGN_IN = gql`
+  mutation LoginMutation {
+    signIn(
+      input: { username: "dhallagan", password: "password", accessToken: true }
+    ) {
+      user {
+        id
+        email
+        username
+        firstName
+        lastName
+        picture {
+          url
+        }
+        timeZone
+        locale
+      }
+      accessToken
+    }
+  }
+`;
 
 export default function LoginScreen() {
-  // const handleLogin = ({ username, password }) => {
-  //   // const login = useStore((state) => state.login);
-  //   // alert(login);
-  //   // try {
-  //   //   login();
-  //   // } catch (error) {
-  //   //   alert(error);
-  //   // }
-  // };
-  let { login } = useStore();
+  let { login, logout } = useTokenStore();
+
+  const mutation = useMutation((input) => {
+    // alert(JSON.stringify(input));
+    return request("https://test.thatclass.co/api/", SIGN_IN, input)
+      .then((res) => {
+        if (res.signIn?.user) {
+          // history.push("/");
+          login(res.signIn?.user.accessToken);
+        } else {
+          const err = errors?.[0];
+        }
+      })
+      .catch((err) => alert(err));
+  });
 
   return (
     <View style={Styles.container}>
@@ -71,7 +101,10 @@ export default function LoginScreen() {
         ></View>
       </View>
 
-      <Formik initialValues={{ username: "", password: "" }}>
+      <Formik
+        initialValues={{ username: "", password: "" }}
+        onSubmit={(values) => mutation.mutate(values)}
+      >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <>
             <View style={Styles.userNameContainer}>
@@ -95,7 +128,7 @@ export default function LoginScreen() {
                 value={values.password}
               />
             </View>
-            <Button title="Login" onPress={login} />
+            <Button title="Login" onPress={handleSubmit} />
           </>
         )}
       </Formik>

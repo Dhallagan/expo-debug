@@ -6,19 +6,17 @@ import { fontSize } from "../constants/dogeStyle";
 
 const GradientText = (props) => {
   return (
-    <MaskedView
-      maskElement={
-        <Text style={{ fontSize: 30, fontWeight: "bold" }} {...props} />
-      }
-    >
-      <LinearGradient
+    // <MaskedView
+    //   maskElement={
+    //     <Text style={{ fontSize: 30, fontWeight: "bold" }} {...props} />
+    //   }
+    // >
+    /* <LinearGradient
         colors={["#C03DAE", "#00BFF7"]}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <Text {...props} style={{ opacity: 0, height: 30 }} />
-      </LinearGradient>
-    </MaskedView>
+        end={{ x: 1, y: 1 }
+      > */
+    <Text {...props} style={{ opacity: 0, height: 30 }} />
   );
 };
 

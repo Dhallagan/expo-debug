@@ -1,8 +1,12 @@
 import * as React from "react";
 import { useMutation } from 'urql';
 
+type SignInInput = {
+  username?: string | null | undefined;
+  password?: string | null | undefined;
+};
 
-const loginMutation = `
+const LOGIN_MUTATION = `
   mutation LoginMutation($input: SignInInput!) {
     signIn(input: $input) {
       user {
@@ -31,14 +35,9 @@ const initialState = {
   };
 
   export function useSignIn(props) {
-    const [state, setState] = React.useState(initialState);
+      const { data, loading, error } = useMutation(LOGIN_MUTATION);
 
-    const handleSubmit = React.useCallback((event: React.FormEvent): void => {
-          event.preventDefault();
-
-          // Execute Mutation
-        },
-        [null, state.input]
+      [null, state.input]
     )
     // const [state, executeMutation] = useMutation(loginMutation);
 
