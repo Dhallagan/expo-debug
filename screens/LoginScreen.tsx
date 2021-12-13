@@ -15,18 +15,17 @@ import { colors } from "../constants/dogeStyle";
 import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
 import { images } from "../assets/";
-import { Formik } from "formik";
+import { ErrorMessage, Formik } from "formik";
 import { Button } from "../components/Button";
 import { useTokenStore } from "../store/useTokenStore";
 import { useSignIn } from "../queries";
 import { useMutation } from "react-query";
 import request, { gql } from "graphql-request";
+import JsonText from "../components/JsonText";
 
 const SIGN_IN = gql`
-  mutation LoginMutation {
-    signIn(
-      input: { username: "dhallagan", password: "password", accessToken: true }
-    ) {
+  mutation LoginMutation($input: SignInInput!) {
+    signIn(input: $input) {
       user {
         id
         email
@@ -43,22 +42,41 @@ const SIGN_IN = gql`
     }
   }
 `;
+type SignInInput = {
+  username?: string | null | undefined;
+  password?: string | null | undefined;
+};
+
+const initialState = {
+  input: {
+    username: "",
+    password: "",
+  } as SignInInput,
+  errors: {} as Record<keyof SignInInput | "_", string[] | undefined>,
+  loading: false,
+};
 
 export default function LoginScreen() {
   let { login, logout } = useTokenStore();
+  const [state, setState] = React.useState(initialState);
 
-  const mutation = useMutation((input) => {
+  const mutation = useMutation((input: SignInInput) => {
     // alert(JSON.stringify(input));
-    return request("https://test.thatclass.co/api/", SIGN_IN, input)
+    return request("https://test.thatclass.co/api/", SIGN_IN, {
+      input,
+    })
       .then((res) => {
         if (res.signIn?.user) {
-          // history.push("/");
           login(res.signIn?.user.accessToken);
-        } else {
-          const err = errors?.[0];
         }
       })
-      .catch((err) => alert(err));
+      .catch((errors) => {
+        const err = errors.response.errors?.[0];
+        setState((prev) => ({
+          ...prev,
+          errors: err?.errors ?? (err ? { _: [err.message] } : {}),
+        }));
+      });
   });
 
   return (
@@ -68,7 +86,7 @@ export default function LoginScreen() {
         {/* <Image source={images.logo}  />s */}
       </View>
 
-      <View style={Styles.socialContainer}>
+      {/* <View style={Styles.socialContainer}>
         <TouchableOpacity style={Styles.socialButton}>
           <Image source={images.google} />
           <Text style={Styles.text}>with Google</Text>
@@ -77,9 +95,9 @@ export default function LoginScreen() {
           <Image source={images.facebook} />
           <Text style={Styles.text}>with Facebook</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <View
+      {/* <View
         style={{
           //flex: 0.1,
           flexDirection: "row",
@@ -99,7 +117,7 @@ export default function LoginScreen() {
             backgroundColor: "#262626",
           }}
         ></View>
-      </View>
+      </View> */}
 
       <Formik
         initialValues={{ username: "", password: "" }}
@@ -117,6 +135,11 @@ export default function LoginScreen() {
                 value={values.username}
               />
             </View>
+            <View style={Styles.errorContainer}>
+              <Text style={{ color: "red" }}>
+                {!!state.errors.username && state.errors.username[0]}
+              </Text>
+            </View>
             <View style={Styles.passwordContainer}>
               <TextInput
                 secureTextEntry={true}
@@ -128,6 +151,12 @@ export default function LoginScreen() {
                 value={values.password}
               />
             </View>
+            <View style={Styles.errorContainer}>
+              <Text style={{ color: "red" }}>
+                {(!!state.errors.password && state.errors.password[0]) || null}
+              </Text>
+            </View>
+
             <Button title="Login" onPress={handleSubmit} />
           </>
         )}
@@ -204,7 +233,7 @@ const Styles = StyleSheet.create({
     marginStart: 20,
     marginEnd: 20,
     marginTop: 20,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   userNameInput: {
     marginStart: 10,
@@ -220,6 +249,12 @@ const Styles = StyleSheet.create({
     marginStart: 20,
     marginEnd: 20,
     // backgroundColor: colors.loginInputBackground,
+    // marginBottom: 5,
+  },
+  errorContainer: {
+    justifyContent: "center",
+    marginStart: 20,
+    marginEnd: 20,
     marginBottom: 20,
   },
   passwordInput: { marginStart: 10, color: "white" },
