@@ -18,6 +18,7 @@ import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_WIDTH } from "../constants";
 import { colors, fontSize } from "../constants/dogeStyle";
+import { useCurrentUserStore } from "../store/useCurrentUserStore";
 import { useTokenStore } from "../store/useTokenStore";
 
 const AuthQuery = `
@@ -39,12 +40,12 @@ const AuthQuery = `
   }
 `;
 
-function useAuth() {
-  return useQuery("auth", async () => {
+function useHomeScreen(token) {
+  return useQuery("homeSreen", async () => {
     return request(
       "https://test.thatclass.co/api/",
       gql`
-        query AuthQuery {
+        query HomeScreen {
           me {
             id
             username
@@ -59,22 +60,54 @@ function useAuth() {
             rank
             rankProgress
           }
+          events(user: "dhallagan", first: 5) {
+            edges {
+              event: node {
+                id
+                class {
+                  id
+                  title
+                  cover {
+                    url
+                  }
+                }
+                scheduledFor
+                team {
+                  name
+                  id
+                }
+                type
+              }
+            }
+          }
         }
-      `
+      `,
+      null,
+      {
+        Authorization: "Bearer " + token,
+      }
     );
   });
 }
 
 export default function HomeScreen() {
   const inset = useSafeAreaInsets();
-  const { status, data, error, isFetching } = useAuth();
+  let { token } = useTokenStore();
+  let { me } = useCurrentUserStore();
+  const { status, data, error, isFetching } = useHomeScreen(token);
 
+  if (status === "loading") {
+    return <Text>Loading...</Text>;
+  }
+  if (status === "error") {
+    return <Text>Oh no... {error.message}</Text>;
+  }
   return (
     <>
       <Header />
       <ScrollView style={styles.container}>
         <Section
-          title={"Upcoming Sessions"}
+          title={"Upcoming Events and Sessions"}
           children={
             <ScrollView
               horizontal={true}
@@ -83,12 +116,31 @@ export default function HomeScreen() {
               snapToAlignment={"center"}
               pagingEnabled
             >
-              <UpcomingCard
-                title="Scheduled Class"
-                scheduledFor={"12/6/2021 3pm"}
-                eventType={"In Person"}
-              />
-              <UpcomingCard
+              {
+                data.events?.edges[0] &&
+                  data.events.edges.map((x, idx) => {
+                    let event = x.event;
+                    return (
+                      <UpcomingCard
+                        key={event.id}
+                        id={event.id}
+                        title={
+                          event.class
+                            ? event.type + ": " + event.class.title
+                            : "In Person" + ": @ The Beach"
+                        }
+                        scheduledFor={event.scheduledFor + " "}
+                        eventType={event.type}
+                        image={
+                          event.type !== "Meetup"
+                            ? event.class?.cover?.url
+                            : undefined
+                        }
+                      />
+                    );
+                  })
+
+                /* <UpcomingCard
                 title="Scheduled Class 2"
                 scheduledFor={"12/6/2021 3pm"}
                 eventType={"In Person"}
@@ -97,11 +149,12 @@ export default function HomeScreen() {
                 title="Scheduled Class 3"
                 scheduledFor={"12/6/2021 3pm"}
                 eventType={"In Person"}
-              />
+              /> */
+              }
             </ScrollView>
           }
         />
-        <Section
+        {/* <Section
           title={"Recent Friend Achievements"}
           children={
             <>
@@ -122,9 +175,9 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </>
           }
-        />
+        /> */}
 
-        <Section
+        {/* <Section
           title={"Featured Studio"}
           children={
             <>
@@ -135,7 +188,7 @@ export default function HomeScreen() {
               <Button />
             </>
           }
-        />
+        /> */}
       </ScrollView>
     </>
   );

@@ -23,6 +23,7 @@ import { AuthenticationSwitch } from "./navigation/AuthenticationSwitch";
 import { StatusBar } from "react-native";
 // import { createClient, defaultExchanges, Provider } from "urql";
 import { devtoolsExchange } from "@urql/devtools";
+import { useTokenStore } from "./store/useTokenStore";
 
 StatusBar.setBarStyle("light-content");
 

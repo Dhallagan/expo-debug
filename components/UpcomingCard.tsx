@@ -38,7 +38,9 @@ export const UpcomingCard: React.FC<UpcomingCardProps> = ({
     <TouchableOpacity style={styles.container} onPress={onPress} key={id}>
       <Image
         source={{
-          url: "https://test-s.thatclass.co/c/jgh57f.jpeg?v=4",
+          url:
+            image ||
+            "https://images.squarespace-cdn.com/content/v1/54dcf200e4b0901d786a8922/1468359374400-ZXJ3P3NIKZEAJOM1LGVV/image-asset.jpeg",
         }}
         style={styles.image}
         resizeMode="cover"

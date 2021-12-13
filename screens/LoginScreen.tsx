@@ -22,6 +22,7 @@ import { useSignIn } from "../queries";
 import { useMutation } from "react-query";
 import request, { gql } from "graphql-request";
 import JsonText from "../components/JsonText";
+import { useCurrentUserStore } from "../store/useCurrentUserStore";
 
 const SIGN_IN = gql`
   mutation LoginMutation($input: SignInInput!) {
@@ -45,6 +46,7 @@ const SIGN_IN = gql`
 type SignInInput = {
   username?: string | null | undefined;
   password?: string | null | undefined;
+  accessToken: true;
 };
 
 const initialState = {
@@ -58,6 +60,7 @@ const initialState = {
 
 export default function LoginScreen() {
   let { login, logout } = useTokenStore();
+  let { setMe } = useCurrentUserStore();
   const [state, setState] = React.useState(initialState);
 
   const mutation = useMutation((input: SignInInput) => {
@@ -67,7 +70,8 @@ export default function LoginScreen() {
     })
       .then((res) => {
         if (res.signIn?.user) {
-          login(res.signIn?.user.accessToken);
+          setMe(res.signIn);
+          login(res.signIn?.accessToken);
         }
       })
       .catch((errors) => {
@@ -120,7 +124,11 @@ export default function LoginScreen() {
       </View> */}
 
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{
+          username: "dhallagan",
+          password: "password",
+          accessToken: true,
+        }}
         onSubmit={(values) => mutation.mutate(values)}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
