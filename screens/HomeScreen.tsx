@@ -14,6 +14,7 @@ import { HomeChallengeCard } from "../components/HomeChallengeCard";
 import HypeHeader from "../components/HypeHeader";
 import JsonText from "../components/JsonText";
 import { Section } from "../components/Section";
+import { TeamCard } from "../components/TeamCard";
 import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_WIDTH } from "../constants";
@@ -77,6 +78,15 @@ function useHomeScreen(token) {
                   id
                 }
                 type
+              }
+            }
+          }
+          teams(user: "dhallagan", first: 5) {
+            edges {
+              team: node {
+                id
+                slug
+                name
               }
             }
           }
@@ -154,6 +164,26 @@ export default function HomeScreen() {
             </ScrollView>
           }
         />
+
+        <Section title={"Your Teams"}>
+          <View style={styles.teamsContainer}>
+            {data.teams?.edges[0] &&
+              data.teams.edges.map((x) => {
+                let event = x.team;
+                return (
+                  <TeamCard
+                    key={x.id}
+                    id={x.id}
+                    title={x.team.name}
+                    team={x.team}
+                    image={
+                      "https://upgradedpoints.com/wp-content/uploads/2018/08/New-York-City-752x348@2x.jpg"
+                    }
+                  />
+                );
+              })}
+          </View>
+        </Section>
         {/* <Section
           title={"Recent Friend Achievements"}
           children={
@@ -199,6 +229,13 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingHorizontal: 5,
     backgroundColor: colors.primary900,
+  },
+  teamsContainer: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    paddingTop: 10,
+    paddingHorizontal: 5,
   },
   text: {
     color: "#fff",

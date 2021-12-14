@@ -18,7 +18,7 @@ export default function TitledGradientHeader(props) {
       <View style={[styles.container, { paddingTop: inset.top }]}>
         <View style={styles.leftContainer}>
           {/* <ProfileButton icon={{ uri: conn.user.avatarUrl }} /> */}
-          {/* <GradientText>{props.title || props.children}</GradientText> */}
+          <GradientText>{props.title || props.children}</GradientText>
         </View>
         <View style={styles.rightContainer}>
           <View

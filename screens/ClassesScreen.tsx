@@ -45,7 +45,6 @@ function useClasses() {
 export default function ClassesScreen() {
   const navigation = useNavigation();
   const inset = useSafeAreaInsets();
-  const [classes, setClasses] = useState([]);
 
   const { status, data, error, isFetching } = useClasses();
 
@@ -68,7 +67,7 @@ export default function ClassesScreen() {
         <Chip title="Popular" />
       </View>
       <ScrollView style={styles.container}>
-        {data &&
+        {data.classes &&
           data.classes.edges.map((x: any) => {
             return (
               <>

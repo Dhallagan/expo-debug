@@ -64,7 +64,6 @@ export default function LoginScreen() {
   const [state, setState] = React.useState(initialState);
 
   const mutation = useMutation((input: SignInInput) => {
-    // alert(JSON.stringify(input));
     return request("https://test.thatclass.co/api/", SIGN_IN, {
       input,
     })

@@ -17,7 +17,7 @@ export default function ProgressAvatar(props) {
       >
         <ProgressCircle
           percent={30}
-          radius={15}
+          radius={23}
           borderWidth={2}
           color="#3399FF"
           shadowColor="#999"
@@ -28,7 +28,7 @@ export default function ProgressAvatar(props) {
             source={{
               uri: "https://yt3.ggpht.com/ytc/AKedOLQYeqpWlkVt-0iV4WLvKWVzUrE6X-SfpckBhbwF=s900-c-k-c0x00ffffff-no-rj",
             }}
-            size={props.size || 20}
+            size={props.size || 35}
           />
         </ProgressCircle>
       </View>
