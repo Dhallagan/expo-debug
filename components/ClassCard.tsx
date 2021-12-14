@@ -6,12 +6,9 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ImageBackground,
 } from "react-native";
-import { RoomCardHeading } from "./CardHeading";
 import { SCREEN_HEIGHT } from "../constants";
 import { Chip } from "../components/Chip";
-import { baseProps } from "react-native-gesture-handler/lib/typescript/handlers/gestureHandlers";
 
 export type ClassCardProps = {
   // style?: ViewStyle;
@@ -20,6 +17,7 @@ export type ClassCardProps = {
   //avatarSrcs: ImageSourcePropType[];
   image: string;
   onPress?: () => void;
+  onSelect?: any;
 };
 
 export const ClassCard: React.FC<ClassCardProps> = ({
@@ -28,15 +26,16 @@ export const ClassCard: React.FC<ClassCardProps> = ({
   title,
   image,
   onPress,
+  onSelect,
 }) => {
   const src = { uri: image || undefined };
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} key={id}>
+    <TouchableOpacity style={styles.container} onPress={onSelect} key={id}>
       <Image source={src} style={styles.image} resizeMode="cover" />
       <Text style={styles.title}>{title}</Text>
       <View style={{ flex: 0, flexDirection: "row" }}>
-        {/* <Chip title="Mantas" outlined={false} /> */}
-        {/* <Chip title="20m"/> */}
+        <Chip title="Mantas" outlined />
+        <Chip title="20m" outlined/>
       </View>
     </TouchableOpacity>
   );
@@ -60,17 +59,20 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
+    paddingLeft: 8,
   },
   tags: {
     color: "white",
     fontSize: 18,
   },
   image: {
+    flex: 1,
     position: "absolute",
     width: "100%",
     height: "100%",
     borderRadius: 10,
     borderWidth: 5,
     borderColor: "transparent",
+    resizeMode: 'contain',
   },
 });
