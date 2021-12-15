@@ -15,48 +15,68 @@ import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
 import { Video } from "expo-av";
 import { Chip } from "../components/Chip";
 import * as ScreenOrientation from "expo-screen-orientation";
-import { useQuery } from "urql";
+import { useQuery } from "react-query";
+import request, { gql } from "graphql-request";
+import { endpoint } from "../constants/httpHelper";
 
-const detailsQuery = `
-query classDetail {
-  video(classId: "Q2xhc3M6ZTlma2g0") {
-    name
-    description
-    height
-    width
-    type
-    link
-    src
+function useClasses(cId) {
+  return useQuery(["classDetail", cId], async () => {
+    return await request(
+      `${endpoint}`,
+      gql`
+        query classDetail($classId: ID!) {
+          video(classId: $classId) {
+            name
+            description
+            height
+            width
+            type
+            link
+            src
+          }
+        }
+      `,
+      {classId: cId}
+    );
+  },
+  {
+    enabled: !!cId,
   }
+  );
 }
-`
 
 interface ClassDetailModalProps {
   onRequestClose: () => void;
+  route: any;
 }
 export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   onRequestClose,
+  route,
 }) => {
   const video = React.useRef(null);
-  const [status, setStatus] = React.useState({});
+  const [status1, setStatus] = React.useState({});
   const inset = useSafeAreaInsets();
 
-  const [result] = useQuery({
-    query: detailsQuery,
-  });
-
-  const { data, fetching, error } = result;
-
+  const { status, data, error, isFetching } = useClasses(route.params.classId);
   console.log('=============v d=======================');
   console.log(data);
   console.log('====================================');
   
 
-  if (fetching) {
-    return <Text>Loading...</Text>;
+  if (status === "loading") {
+    return(
+      <View style={styles.containerLoad}>
+          <Text style={styles.titleText}>Loading...</Text>
+      </View>
+    )
+    return ;
   }
-  if (error) {
-    return <Text>Oh no... {error.message}</Text>;
+  if (status === "error") {
+    return (
+      <View style={styles.containerLoad}>
+          <Text style={styles.titleText}>Oh no... {error.message}</Text>
+      </View>
+    )
   }
 
   const onFullscreenUpdate = ({ fullscreenUpdate, status }) => {
@@ -147,6 +167,12 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
 };
 
 const styles = StyleSheet.create({
+  containerLoad: {
+    flex: 1,
+    backgroundColor: colors.primary800,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: colors.primary800,

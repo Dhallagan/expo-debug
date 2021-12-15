@@ -32,7 +32,7 @@ export const ClassOptionsScreen: React.FC<ClassOptionsModalProps> = ({
         <View>
           <View style={{ display: "flex", width: "100%" }}>
             {checkFilter && checkFilter.map((item, index) => (
-              <View style={{ flex: 0, flexDirection: "row" }}>
+              <View style={{ flex: 0, flexDirection: "row" }} key={index}>
               <Text
                 style={{
                   flex: 1,

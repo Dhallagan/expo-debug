@@ -33,7 +33,14 @@ export default function ClassHeader(props) {
                         </View> */}
           </View>
 
-          <ClassOptionsButton />
+          <ClassOptionsButton 
+            checkFilter={props.checkFilter}
+            setCheckFilter={props.setCheckFilter}
+            filterEquipment={props.filterEquipment}
+            setFilterEquipment={props.setFilterEquipment}
+            filterInstructors={props.filterInstructors}
+            setFilterInstructors={props.setFilterInstructors}
+          />
         </View>
       </View>
     </>

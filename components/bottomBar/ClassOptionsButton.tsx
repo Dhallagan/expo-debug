@@ -4,85 +4,120 @@ import Modal from "react-native-modal";
 import { ClassOptionsScreen } from "../../screens/ClassOptionsScreen";
 import { CreatePostScreen } from "../../screens/CreatePostScreen";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useQuery } from "urql";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
 import { colors, fontFamily, fontSize, radius } from "../../constants/dogeStyle";
+import { useQuery } from "react-query";
+import request, { gql } from "graphql-request";
+import { endpoint } from "../../constants/httpHelper";
 
-const Filter = `
-query OptionsQuery {
-  classTypes {
-    id
-    name
-  }
-  equipment {
-    id
-    name
-  }
-  instructors {
-    id
-    displayName
-    user {
-      username
-      picture {
-        url
-      }
-      id
-    }
-  }
-}
-`
-const appliedFilters = `
-query queryClasses ($instructor: String, $equipment: String, $type: String, $first: Int) {
-  classes(instructor: $instructor, equipment: $equipment, type: $type, first: $first) {
-    edges {
-      class: node {
-        id
-        title
-        cover {
-          url
+const useFilters = () => {
+  return useQuery("OptionsQuery", async () => {
+    return await request(
+      `${endpoint}`,
+      gql`
+      query OptionsQuery {
+        classTypes {
+          id
+          name
         }
-        duration
+        equipment {
+          id
+          name
+        }
         instructors {
           id
           displayName
           user {
             username
+            picture {
+              url
+            }
+            id
           }
         }
       }
-    }
-  }
+      `
+    );
+  });
 }
-`
+
+const useAppliedFilters = () => {
+  return useQuery("queryClasses", async () => {
+    return await request(
+      `${endpoint}`,
+      gql`
+      query queryClasses ($instructor: String, $equipment: String, $type: String, $first: Int) {
+        classes(instructor: $instructor, equipment: $equipment, type: $type, first: $first) {
+          edges {
+            class: node {
+              id
+              title
+              cover {
+                url
+              }
+              duration
+              instructors {
+                id
+                displayName
+                user {
+                  username
+                }
+              }
+            }
+          }
+        }
+      }
+      `
+    );
+  });
+}
+
+const onApplyFilters = () => {
+  // const { status, data, error, isFetching } = useAppliedFilters()
+  // console.log('filtered Data',data);
+}
 
 interface CreatePostModalProps {
   onRequestClose: () => void;
+  checkFilter: any;
+  setCheckFilter: any;
+  filterInstructors: any;
+  setFilterInstructors: any;
 }
 
 export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
   onRequestClose,
+  checkFilter,
+  setCheckFilter,
+  filterInstructors,
+  setFilterInstructors
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [result] = useQuery({
-    query: Filter,
-  });
-  const { data, fetching, error } = result;
 
-  const classDatas = data?.classTypes?.map(
-    (item: { id: any; name: any; })=>(
-      {id: item.id, label:item.name, checked:false}
-    ));
-  const equipments = data?.equipment?.map(
-    (item: { id: any; name: any; })=>(
-      {id: item.id, label:item.name, checked:false}
-    ));
-  const instructors = data?.instructors?.map(
-    (item: { id: any; displayName: any; })=>(
-      {id: item.id, label:item.displayName, checked:false}
-    ));
-  const [checkFilter, setCheckFilter] = useState(classDatas);
-  const [filterEquipment, setFilterEquipment] = useState(equipments);
-  const [filterInstructors, setFilterInstructors] = useState(instructors);
+  const { status, data, error, isFetching } = useFilters();
+
+  const [filterEquipment, setFilterEquipment] = useState();
+  const [isRefresh, setIsRefresh] = useState(false);
+  useEffect(() => {
+      if (status === 'success' && data) {
+        // setIsRefresh(!isRefresh)
+      const classDatas = data && data?.classTypes?.map(
+        (item: { id: any; name: any; })=>(
+          {id: item.id, label:item.name, checked:false}
+        ));
+      const equipments = data?.equipment?.map(
+        (item: { id: any; name: any; })=>(
+          {id: item.id, label:item.name, checked:false}
+        ));
+      const instructors = data?.instructors?.map(
+        (item: { id: any; displayName: any; })=>(
+          {id: item.id, label:item.displayName, checked:false}
+        ));
+      setCheckFilter(classDatas);
+      setFilterEquipment(equipments);
+      setFilterInstructors(instructors);
+      }
+  }, [status, data])
 
   const onChecked = (index: number) => {
     let dummydata1 = checkFilter;
@@ -102,18 +137,27 @@ export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
     setFilterInstructors(dummydata);
   }
 
+  // console.log(checkFilter);
+  
+
   const instructor = 'Manta Z';
   const equipment = 'Box';
   const type = 'Cycle';
   const first = 2;
-  const [result1] = useQuery({
-    query: appliedFilters,
-    variables: { instructor, equipment, type, first },
-  });
 
-  const onApplyFilters = () => {
-    const { data, fetching, error } = result1;
-    console.log('filtered Data',data);
+  if (status === "loading") {
+    return(
+      <View style={styles.containerLoad}>
+          <Text style={styles.titleText}>Loading...</Text>
+      </View>
+    )
+  }
+  if (status === "error") {
+    return (
+      <View style={styles.containerLoad}>
+          <Text style={styles.titleText}>Oh no... {error.message}</Text>
+      </View>
+    )
   }
   
   return (
@@ -169,6 +213,17 @@ export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
 };
 
 const styles = StyleSheet.create({
+  containerLoad: {
+    flex: 1,
+    backgroundColor: colors.primary800,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleText: {
+    fontSize: fontSize.h3,
+    color: colors.text,
+    padding: 5,
+  },
   contentView: {
     justifyContent: "flex-end",
     margin: 0,

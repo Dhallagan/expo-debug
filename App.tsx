@@ -21,14 +21,18 @@ import LoginScreen from "./screens/LoginScreen";
 import HomeScreen from "./navigation/BottomNavigator";
 import { AuthenticationSwitch } from "./navigation/AuthenticationSwitch";
 import { StatusBar } from "react-native";
-import { createClient, defaultExchanges, Provider } from "urql";
+// import { createClient, defaultExchanges, Provider } from "urql";
 import { devtoolsExchange } from "@urql/devtools";
+import { useTokenStore } from "./store/useTokenStore";
 
 StatusBar.setBarStyle("light-content");
 
-const client = createClient({
-  url: "https://test.thatclass.co/api/",
-  exchanges: [devtoolsExchange, ...defaultExchanges],
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
 });
 
 export default function App() {
@@ -38,13 +42,13 @@ export default function App() {
   const [data, setData] = useState([]);
 
   return (
-    <Provider value={client}>
+    <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <NavigationContainer>
           <StatusBar barStyle="light-content" />
           <AuthenticationSwitch />
         </NavigationContainer>
       </SafeAreaProvider>
-    </Provider>
+    </QueryClientProvider>
   );
 }

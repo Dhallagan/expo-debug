@@ -15,21 +15,72 @@ import { colors } from "../constants/dogeStyle";
 import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
 import { images } from "../assets/";
-import { Formik } from "formik";
+import { ErrorMessage, Formik } from "formik";
 import { Button } from "../components/Button";
-import { useStore } from "../store/useTokenStore";
+import { useTokenStore } from "../store/useTokenStore";
+import { useSignIn } from "../queries";
+import { useMutation } from "react-query";
+import request, { gql } from "graphql-request";
+import JsonText from "../components/JsonText";
+import { useCurrentUserStore } from "../store/useCurrentUserStore";
+
+const SIGN_IN = gql`
+  mutation LoginMutation($input: SignInInput!) {
+    signIn(input: $input) {
+      user {
+        id
+        email
+        username
+        firstName
+        lastName
+        picture {
+          url
+        }
+        timeZone
+        locale
+      }
+      accessToken
+    }
+  }
+`;
+type SignInInput = {
+  username?: string | null | undefined;
+  password?: string | null | undefined;
+  accessToken: true;
+};
+
+const initialState = {
+  input: {
+    username: "",
+    password: "",
+  } as SignInInput,
+  errors: {} as Record<keyof SignInInput | "_", string[] | undefined>,
+  loading: false,
+};
 
 export default function LoginScreen() {
-  // const handleLogin = ({ username, password }) => {
-  //   // const login = useStore((state) => state.login);
-  //   // alert(login);
-  //   // try {
-  //   //   login();
-  //   // } catch (error) {
-  //   //   alert(error);
-  //   // }
-  // };
-  let { login } = useStore();
+  let { login, logout } = useTokenStore();
+  let { setMe } = useCurrentUserStore();
+  const [state, setState] = React.useState(initialState);
+
+  const mutation = useMutation((input: SignInInput) => {
+    return request("https://test.thatclass.co/api/", SIGN_IN, {
+      input,
+    })
+      .then((res) => {
+        if (res.signIn?.user) {
+          setMe(res.signIn);
+          login(res.signIn?.accessToken);
+        }
+      })
+      .catch((errors) => {
+        const err = errors.response.errors?.[0];
+        setState((prev) => ({
+          ...prev,
+          errors: err?.errors ?? (err ? { _: [err.message] } : {}),
+        }));
+      });
+  });
 
   return (
     <View style={Styles.container}>
@@ -38,7 +89,7 @@ export default function LoginScreen() {
         {/* <Image source={images.logo}  />s */}
       </View>
 
-      <View style={Styles.socialContainer}>
+      {/* <View style={Styles.socialContainer}>
         <TouchableOpacity style={Styles.socialButton}>
           <Image source={images.google} />
           <Text style={Styles.text}>with Google</Text>
@@ -47,9 +98,9 @@ export default function LoginScreen() {
           <Image source={images.facebook} />
           <Text style={Styles.text}>with Facebook</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
-      <View
+      {/* <View
         style={{
           //flex: 0.1,
           flexDirection: "row",
@@ -69,9 +120,16 @@ export default function LoginScreen() {
             backgroundColor: "#262626",
           }}
         ></View>
-      </View>
+      </View> */}
 
-      <Formik initialValues={{ username: "", password: "" }}>
+      <Formik
+        initialValues={{
+          username: "dhallagan",
+          password: "password",
+          accessToken: true,
+        }}
+        onSubmit={(values) => mutation.mutate(values)}
+      >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <>
             <View style={Styles.userNameContainer}>
@@ -84,6 +142,11 @@ export default function LoginScreen() {
                 value={values.username}
               />
             </View>
+            <View style={Styles.errorContainer}>
+              <Text style={{ color: "red" }}>
+                {!!state.errors.username && state.errors.username[0]}
+              </Text>
+            </View>
             <View style={Styles.passwordContainer}>
               <TextInput
                 secureTextEntry={true}
@@ -95,7 +158,13 @@ export default function LoginScreen() {
                 value={values.password}
               />
             </View>
-            <Button title="Login" onPress={login} />
+            <View style={Styles.errorContainer}>
+              <Text style={{ color: "red" }}>
+                {(!!state.errors.password && state.errors.password[0]) || null}
+              </Text>
+            </View>
+
+            <Button title="Login" onPress={handleSubmit} />
           </>
         )}
       </Formik>
@@ -171,7 +240,7 @@ const Styles = StyleSheet.create({
     marginStart: 20,
     marginEnd: 20,
     marginTop: 20,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   userNameInput: {
     marginStart: 10,
@@ -187,6 +256,12 @@ const Styles = StyleSheet.create({
     marginStart: 20,
     marginEnd: 20,
     // backgroundColor: colors.loginInputBackground,
+    // marginBottom: 5,
+  },
+  errorContainer: {
+    justifyContent: "center",
+    marginStart: 20,
+    marginEnd: 20,
     marginBottom: 20,
   },
   passwordInput: { marginStart: 10, color: "white" },

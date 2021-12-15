@@ -1,7 +1,8 @@
 import create from 'zustand'
 
-export const [useStore] = create(set => ({
+export const [useTokenStore] = create(set => ({
     hasToken: false,
-    login:  () => set({ hasToken: true }),
-    logout: () => set({ hasToken: false })
+    token: null,
+    login:  (token: string) => set({ hasToken: true, token: token }),
+    logout: () => set({ hasToken: false, token: null })
   }))
