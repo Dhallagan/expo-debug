@@ -5,6 +5,10 @@ import ProgressCircle from "react-native-progress-circle";
 import { colors } from "../constants/dogeStyle";
 
 export default function ProgressAvatar(props) {
+  const { size, style } = props;
+  let ProgressCircleRadius = size;
+  let ImageCircleDiameter = size * 2 * 0.85;
+  let BorderWidth = size * 0.1;
   return (
     <>
       <View
@@ -13,14 +17,15 @@ export default function ProgressAvatar(props) {
           justifyContent: "center",
           alignItems: "center",
           padding: 4,
+          ...style,
         }}
       >
         <ProgressCircle
           percent={30}
-          radius={23}
-          borderWidth={2}
+          radius={size ? ProgressCircleRadius : 23}
+          borderWidth={size ? BorderWidth : 2}
           color="#3399FF"
-          shadowColor="#999"
+          shadowColor={colors.primary500}
           bgColor={colors.primary700}
         >
           <Avatar
@@ -28,7 +33,7 @@ export default function ProgressAvatar(props) {
             source={{
               uri: "https://yt3.ggpht.com/ytc/AKedOLQYeqpWlkVt-0iV4WLvKWVzUrE6X-SfpckBhbwF=s900-c-k-c0x00ffffff-no-rj",
             }}
-            size={props.size || 35}
+            size={size ? ImageCircleDiameter : 35}
           />
         </ProgressCircle>
       </View>

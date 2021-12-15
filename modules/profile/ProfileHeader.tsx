@@ -1,14 +1,16 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
-import { images } from "../assets";
-import { colors, fontSize } from "../constants/dogeStyle";
-import { ClassOptionsButton } from "./bottomBar/ClassOptionsButton";
-import GradientText from "./GradientText";
+import { images } from "../../assets";
+import { colors, fontSize } from "../../constants/dogeStyle";
+import { ClassOptionsButton } from "../../components/bottomBar/ClassOptionsButton";
+import { ProfileSettingsButton } from "./ProfileSettingsButton";
+import GradientText from "../../components/GradientText";
 
-export default function ClassHeader(props) {
+export default function ProfileHeader(props) {
+  const { title } = props;
   const navigation = useNavigation();
   const inset = useSafeAreaInsets();
 
@@ -17,7 +19,7 @@ export default function ClassHeader(props) {
       <View style={[styles.container, { paddingTop: inset.top }]}>
         <View style={styles.leftContainer}>
           {/* <ProfileButton icon={{ uri: conn.user.avatarUrl }} /> */}
-          <GradientText>{props.title || props.children}</GradientText>
+          <GradientText>{title || props.children}</GradientText>
         </View>
         <View style={styles.rightContainer}>
           <View
@@ -28,7 +30,9 @@ export default function ClassHeader(props) {
             }}
           ></View>
 
-          <ClassOptionsButton />
+          <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+            <Icon name={"ios-settings-outline"} size={29} color={"white"} />
+          </TouchableOpacity>
         </View>
       </View>
     </>

@@ -9,6 +9,8 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
 import { Button } from "../../components/Button";
 import { colors } from "../../constants/dogeStyle";
 import { PostCardComment } from "./PostCardComment";
+import { Content } from "./Content";
+import { CardDivider } from "../../components/CardDivider";
 
 type PostCardProps = {
   post: Any;
@@ -32,9 +34,9 @@ export function PostCard(props) {
 
   return (
     <View style={styles.container}>
-      <Divider
+      {/* <Divider
         style={{ borderColor: "rgba(255, 255, 255, 0.05)", marginBottom: 1 }}
-      />
+      /> */}
       <View style={styles.topContainer}>
         <View style={styles.leftHeader}>
           {/* Progress Avatar */}
@@ -49,12 +51,12 @@ export function PostCard(props) {
         </View>
       </View>
 
-      <Divider
-        style={{ borderColor: "rgba(255, 255, 255, 0.05)", marginBottom: 1 }}
-      />
+      <CardDivider />
+
       <View>
         {/* Content */}
-        {post.content && <JsonText obj={post.content} />}
+
+        {post.content && <Content sx={{ padding: 10 }} value={post.content} />}
 
         {/* Media */}
 
@@ -65,16 +67,16 @@ export function PostCard(props) {
               source={image}
               resizeMode="cover"
               style={{
-                width: SCREEN_WIDTH,
+                width: SCREEN_WIDTH - 10,
                 height: desiredHeight,
               }}
             />
           </>
         )}
       </View>
-      <Divider
-        style={{ borderColor: "rgba(255, 255, 255, 0.05)", marginBottom: 1 }}
-      />
+
+      <CardDivider />
+
       <View style={styles.topContainer}>
         {/*  */}
         <TouchableOpacity
@@ -103,31 +105,32 @@ export function PostCard(props) {
           )}
         </TouchableOpacity>
       </View>
-      <Divider
-        style={{ borderColor: "rgba(255, 255, 255, 0.05)", marginBottom: 1 }}
-      />
 
-      {post.comments?.map((x) => (
-        <PostCardComment
-          key={x.id}
-          comment={x}
-          // onClickDelete={state.handleClickDelete}
-        />
-      ))}
+      <CardDivider />
+
+      <View style={{ paddingTop: 5 }}>
+        {post.comments?.map((x) => (
+          <PostCardComment
+            key={x.id}
+            comment={x}
+            // onClickDelete={state.handleClickDelete}
+          />
+        ))}
+      </View>
     </View>
   );
 }
 
-function Content(props) {}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: SCREEN_WIDTH,
+    width: SCREEN_WIDTH - 10,
     justifyContent: "center",
-    marginBottom: 5,
-    backgroundColor: colors.primary900,
+    marginVertical: 5,
+    backgroundColor: colors.primary800,
     paddingBottom: 20,
+    borderRadius: 10,
+    margin: 5,
   },
   topContainer: {
     flex: 0,
@@ -147,6 +150,7 @@ const styles = StyleSheet.create({
   titleText: {
     color: "#fff",
     fontSize: 18,
+    fontWeight: "bold",
   },
   subtitleText: {
     color: "#fff",

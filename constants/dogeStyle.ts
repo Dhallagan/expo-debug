@@ -19,10 +19,10 @@ export const fontFamily = {
 };
 
 export const fontSize = {
-  h1: 56,
-  h2: 40,
-  h3: 28,
-  h4: 20,
+  h1: 28,
+  h2: 20,
+  h3: 16,
+  h4: 10,
   paragraph: 14,
   small: 12,
   xs: 10,
@@ -33,16 +33,26 @@ export const colors = {
   primary100: "#dee3ea",
   primary200: "#b2bdcd",
   primary300: "#e0e0e0",
+  primary500: "#474747",
   primary600: "#343536",
   primary700: "#18191a",
-  primary800: "#0b0c0c",
-  primary900: "#121212",
+  primary800: "#121212",
+  primary900: "#0b0c0c",
+  primary1000: "#0d0b0b",
   secondary: "#5575e7",
   secondaryWashedOut: "#879eed",
   accent: "#fd4d4d",
   accentHover: "#fd6868",
   accentDisabled: "#f5bfbf",
-  black: "#000",
+  black: "#000000",
+  white: "#FFFFFFF",
+  coral: "#D7486C",
+  sky:"#00BFF7",
+  purple: "#7c2564",
+  cyan: "#0090CE",
+  magenta: "#C03DAE",
+  menu: "#1f1f1f",
+  card: "#1e1e1e"
 };
 
 const textBase: TextStyle = {

@@ -1,5 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
+import { color } from "react-native-elements/dist/helpers";
+import { colors } from "../constants/dogeStyle";
 
 export type ChipProps = {
   title: string;
@@ -16,8 +18,8 @@ export const Chip: React.FC<ChipProps> = ({
     <TouchableOpacity
       style={[
         (outlined = true
-          ? { backgroundColor: "rgba(255,255,255,0.3)" }
-          : { backgroundColor: "rgba(255,255,255,0.0)" }),
+          ? { backgroundColor: colors.purple }
+          : { backgroundColor: "rgba(255,255,255,0.5)" }),
         {
           borderRadius: 20,
           borderStyle: "solid",

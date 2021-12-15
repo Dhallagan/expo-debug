@@ -2,7 +2,6 @@ import React from "react";
 import { Text } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
-import { fontSize } from "../constants/dogeStyle";
 
 const GradientText = (props) => {
   return (
