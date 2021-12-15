@@ -14,22 +14,33 @@ export default function Header() {
     <>
       <View style={[styles.container, { paddingTop: inset.top }]}>
         <View style={styles.leftContainer}>
-          {/* <ProfileButton icon={{ uri: conn.user.avatarUrl }} /> */}
-          <Image source={images.logoSmall} />
+          <Image
+            source={images.logoTransparent}
+            style={{ height: 30, width: 225 }}
+            resizeMode="stretch"
+          />
         </View>
         <View style={styles.rightContainer}>
-          {/* <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                        <View style={{  flexDirection: 'column' }}>
-                            <Text style={styles.nextClass }>Next Class:</Text>
-                            <Text style={styles.nextClass}> 3pm</Text>
-                        </View>
-                    </View> */}
-          <Icon
-            name={"ios-notifications"}
-            size={20}
-            color={"white"}
-            onPress={() => navigation.navigate("Notifications")}
-          />
+          <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+            <View style={{ padding: 10 }}>
+              <Icon
+                onPress={() => {
+                  alert("Go to Session");
+                }}
+                name={"radio-outline"}
+                size={30}
+                color={colors.coral}
+              />
+            </View>
+          </View>
+          <View style={{ flexDirection: "column", justifyContent: "center" }}>
+            <Icon
+              name={"ios-notifications"}
+              size={20}
+              color={"white"}
+              onPress={() => navigation.navigate("Notifications")}
+            />
+          </View>
         </View>
       </View>
     </>
@@ -42,19 +53,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.primary800,
     flexDirection: "row",
-    paddingHorizontal: 25,
   },
   text: {
     color: "#fff",
   },
   leftContainer: {
+    paddingHorizontal: 10,
     height: 70,
     justifyContent: "center",
+    alignItems: "flex-start",
   },
   rightContainer: {
+    paddingHorizontal: 25,
     flexDirection: "row",
   },
   nextClass: {
     color: "#fff",
+    fontWeight: "bold",
+    fontSize: 18,
   },
 });

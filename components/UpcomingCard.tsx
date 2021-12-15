@@ -12,6 +12,7 @@ import { RoomCardHeading } from "./CardHeading";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { Chip } from "./Chip";
 import { baseProps } from "react-native-gesture-handler/lib/typescript/handlers/gestureHandlers";
+import { format } from "date-fns";
 
 export type UpcomingCardProps = {
   // style?: ViewStyle;
@@ -34,6 +35,7 @@ export const UpcomingCard: React.FC<UpcomingCardProps> = ({
   onPress,
 }) => {
   const src = { uri: image || undefined };
+  const date = scheduledFor ? new Date(scheduledFor) : null;
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} key={id}>
       <Image
@@ -46,7 +48,7 @@ export const UpcomingCard: React.FC<UpcomingCardProps> = ({
         resizeMode="cover"
       />
       <Text style={styles.title}>{title}</Text>
-      <Chip title={scheduledFor} />
+      <Chip title={format(date, "MMMM d p")} />
       <View style={{ flex: 0, flexDirection: "row" }}>
         <Text style={styles.eventType} title={eventType} />
         {/* <Chip title="20m"/> */}
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
   container: {
     position: "relative",
     height: (SCREEN_HEIGHT - 100) / 5,
-    borderRadius: 10,
+    borderRadius: 4,
     borderStyle: "solid",
     // backgroundColor: colors.primary100,
     width: SCREEN_WIDTH,
@@ -81,9 +83,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    borderRadius: 10,
+    borderRadius: 4,
     borderWidth: 5,
     borderColor: "transparent",
+    opacity: 0.5,
   },
   eventType: {
     color: "white",

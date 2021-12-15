@@ -6,13 +6,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
 // import { useQuery } from "urql";
 import { Button } from "../components/Button";
+import { Card } from "../components/Card";
 import { FeaturedStudioCard } from "../components/FeaturedStudioCard";
 import GradientText from "../components/GradientText";
+import { GreetingText } from "../components/GreetingText";
 import Header from "../components/Header";
 import { HomeAchievementCard } from "../components/HomeAcheivementCard";
-import { HomeChallengeCard } from "../components/HomeChallengeCard";
-import HypeHeader from "../components/HypeHeader";
-import JsonText from "../components/JsonText";
+
 import { Section } from "../components/Section";
 import { TeamCard } from "../components/TeamCard";
 import { TitledHeader } from "../components/TitledHeader";
@@ -115,9 +115,12 @@ export default function HomeScreen() {
   return (
     <>
       <Header />
-      <ScrollView style={styles.container}>
+      <ScrollView style={{ backgroundColor: colors.primary900 }}>
+        <GreetingText>Hi, Dylan!</GreetingText>
+
         <Section
-          title={"Upcoming Events and Sessions"}
+          style={{ marginBottom: 40 }}
+          title={"You got a couple upcoming events"}
           children={
             <ScrollView
               horizontal={true}
@@ -139,7 +142,7 @@ export default function HomeScreen() {
                             ? event.type + ": " + event.class.title
                             : "In Person" + ": @ The Beach"
                         }
-                        scheduledFor={event.scheduledFor + " "}
+                        scheduledFor={event.scheduledFor}
                         eventType={event.type}
                         image={
                           event.type !== "Meetup"
@@ -165,26 +168,29 @@ export default function HomeScreen() {
           }
         />
 
-        <Section title={"Your Teams"}>
-          <View style={styles.teamsContainer}>
-            {data.teams?.edges[0] &&
-              data.teams.edges.map((x) => {
-                let event = x.team;
-                return (
-                  <TeamCard
-                    key={x.id}
-                    id={x.id}
-                    title={x.team.name}
-                    team={x.team}
-                    image={
-                      "https://upgradedpoints.com/wp-content/uploads/2018/08/New-York-City-752x348@2x.jpg"
-                    }
-                  />
-                );
-              })}
-          </View>
-        </Section>
-        {/* <Section
+        {/* <Card>
+          <Section title={"Your Teams"}>
+            <View style={styles.teamsContainer}>
+              {data.teams?.edges[0] &&
+                data.teams.edges.map((x) => {
+                  let event = x.team;
+                  return (
+                    <TeamCard
+                      key={x.id}
+                      id={x.id}
+                      title={x.team.name}
+                      team={x.team}
+                      image={
+                        "https://upgradedpoints.com/wp-content/uploads/2018/08/New-York-City-752x348@2x.jpg"
+                      }
+                    />
+                  );
+                })}
+            </View>
+          </Section>
+        </Card> */}
+
+        <Section
           title={"Recent Friend Achievements"}
           children={
             <>
@@ -200,12 +206,10 @@ export default function HomeScreen() {
                 title={"Steph just completed 100 classes"}
                 subtitle={"16 hours ago"}
               />
-              <TouchableOpacity style={styles.sectionButton}>
-                <Text style={styles.text}>View Friends Feed</Text>
-              </TouchableOpacity>
+              <Button title="View Feed" />
             </>
           }
-        /> */}
+        />
 
         {/* <Section
           title={"Featured Studio"}
@@ -228,7 +232,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingHorizontal: 5,
-    backgroundColor: colors.primary900,
   },
   teamsContainer: {
     flex: 1,
@@ -243,7 +246,7 @@ const styles = StyleSheet.create({
   sectionButton: {
     alignItems: "center",
     borderColor: "#343536",
-    backgroundColor: "#343536",
+    backgroundColor: colors.coral,
     borderWidth: 2,
     borderRadius: 5,
     paddingVertical: 5,

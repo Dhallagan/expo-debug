@@ -10,6 +10,8 @@ import {
 import * as React from "react";
 import ProgressAvatar from "../../components/ProgressAvatar";
 import { Content } from "./Content";
+import { colors, radius } from "../../constants/dogeStyle";
+import { SCREEN_WIDTH } from "../../constants";
 
 type PostCardCommentProps = {
   comment: Any;
@@ -27,11 +29,11 @@ export function PostCardComment(props: PostCardCommentProps) {
   return (
     <View style={styles.container}>
       <View>
-        <ProgressAvatar />
+        <ProgressAvatar style={{ marginRight: 10 }} />
       </View>
       <View style={styles.contentBox}>
-        <Content value={comment.content} />
-        <Text style={styles.text}>{timeToNow} ago</Text>
+        <Content sx={{ paddingLeft: 10 }} value={comment.content} />
+        <Text style={styles.subText}>{timeToNow} ago</Text>
       </View>
     </View>
   );
@@ -45,9 +47,14 @@ const styles = StyleSheet.create({
   },
   contentBox: {
     justifyContent: "center",
+    backgroundColor: colors.primary700,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: radius.m,
+    maxWidth: (SCREEN_WIDTH / 4) * 3,
   },
-  text: {
-    color: "#fff",
+  subText: {
+    color: colors.primary500,
     marginLeft: 10,
   },
 });

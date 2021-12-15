@@ -1,5 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
+import { color } from "react-native-elements/dist/helpers";
+import { colors } from "../constants/dogeStyle";
 
 export type ChipProps = {
   id: number;

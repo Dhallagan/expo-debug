@@ -8,11 +8,12 @@ export type SectionProps = {
   title: string;
   // avatarSrcs: ImageSourcePropType[];
   subtitle: string;
+  styles: Object;
   onPress?: () => void;
 };
 
 export const Section: React.FC<RoomCardProps> = ({
-  //   style,
+  style,
   title,
   //   avatarSrcs,
   subtitle,
@@ -23,7 +24,7 @@ export const Section: React.FC<RoomCardProps> = ({
   children,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View style={styles.topContainer}>
         <View style={styles.topLeftContainer}>
           <Text style={{ fontWeight: "bold", fontSize: 18, color: "white" }}>
@@ -39,15 +40,17 @@ export const Section: React.FC<RoomCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: radius.m,
-    paddingVertical: 20,
+    paddingBottom: 10,
   },
   topContainer: {
     flexDirection: "row",
-    padding: 5,
+    paddingLeft: 5,
   },
   topLeftContainer: {
     flex: 1,
+    // borderLeftColor: colors.coral,
+    // borderLeftWidth: 3,
+    paddingLeft: 5,
   },
   topRightContainer: {},
   headingContainer: {

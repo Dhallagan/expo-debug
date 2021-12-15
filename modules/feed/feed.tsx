@@ -11,13 +11,14 @@ import {
 import { useQuery } from "react-query";
 import { graphql, useFragment } from "react-relay";
 import JsonText from "../../components/JsonText";
+import { colors } from "../../constants/dogeStyle";
 import { useTokenStore } from "../../store/useTokenStore";
 import { PostCard } from "./PostCard";
 import { useLike } from "./PostList.hooks";
 import { PostList_posts$key } from "./__generated__/PostList_posts.graphql";
 
 function useFeed(token) {
-  return useQuery("classes", async () => {
+  return useQuery("feed", async () => {
     return await request(
       "https://test.thatclass.co/api/",
       gql`
@@ -90,18 +91,24 @@ export function PostList(props: any) {
   // const like = useLike();
 
   if (status === "loading") {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: colors.text }}>Loading...</Text>
+      </View>
+    );
   }
   if (status === "error") {
-    return <Text>{error.message}</Text>;
+    return (
+      <View style={styles.container}>
+        <Text style={{ color: colors.text }}>{error.message}</Text>
+      </View>
+    );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {data.posts?.edges?.map((edge) => {
-        // edge?.post && (
-        return <PostCard key={edge.post.id} post={edge.post} />;
-        //   <PostCard key={edge.post.id} post={edge.post} onClickLike={like} />
+      {data.posts?.edges?.map((edge, idx) => {
+        return <PostCard key={idx} post={edge.post} />;
       })}
     </ScrollView>
   );
@@ -109,6 +116,6 @@ export function PostList(props: any) {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "yellow",
+    backgroundColor: colors.primary900,
   },
 });

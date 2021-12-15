@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { CardHeading, RoomCardHeading } from "./CardHeading";
+import { CardHeading } from "./CardHeading";
 
 export type HomeAcheivementCardProps = {
   // style?: ViewStyle;
@@ -35,7 +35,7 @@ export const HomeAchievementCard: React.FC<HomeAcheivementCardProps> = ({
   return (
     <>
       <TouchableOpacity style={[styles.container]} onPress={onPress}>
-        <Image source={image} resizeMode="cover" style={styles.image} />
+        {/* <Image source={image} resizeMode="cover" style={styles.image} /> */}
         <View style={styles.topContainer}>
           <View style={styles.topLeftContainer}>
             <CardHeading icon={undefined} text={title} />
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   topContainer: {
     padding: 10,
     flexDirection: "row",
-    backgroundColor: "#000000a0",
+    // backgroundColor: "#000000a0",
     borderRadius: radius.s,
   },
   topLeftContainer: {

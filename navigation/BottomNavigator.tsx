@@ -4,14 +4,13 @@ import { Text, View } from "react-native";
 import MainScreen from "../screens/MainScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PostScreen from "../screens/PostScreen";
-import NotificationsScreen from "../screens/NotificationsScreen";
+import NotificationsScreen from "../screens/SettingsScreen";
 import Icon from "react-native-vector-icons/Ionicons";
 import TeamsScreen from "../screens/TeamsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ClassesScreen from "../screens/ClassesScreen";
 import { CreatePostScreen } from "../screens/CreatePostScreen";
 import { CreatePostButton } from "../components/bottomBar/CreatePostButton";
-import { color } from "react-native-elements/dist/helpers";
 import { colors } from "../constants/dogeStyle";
 import ProgressAvatar from "../components/ProgressAvatar";
 
@@ -30,7 +29,7 @@ export default function BottomNavigator() {
 
           if (route.name === "Home") {
             iconName = focused ? "ios-home" : "ios-home-outline";
-          } else if (route.name === "Teams") {
+          } else if (route.name === "Social") {
             iconName = focused ? "ios-people" : "ios-people-outline";
           } else if (route.name === "Classes") {
             iconName = focused ? "ios-play" : "ios-play-outline";
@@ -46,7 +45,7 @@ export default function BottomNavigator() {
         },
         tabBarActiveTintColor: "white",
         tabBarInactiveTintColor: "gray",
-        tabBarStyle: { backgroundColor: colors.primary800 },
+        tabBarStyle: { backgroundColor: colors.primary800, borderTopWidth: 0 },
         headerShown: false,
       })}
     >
@@ -64,7 +63,7 @@ export default function BottomNavigator() {
           tabBarButton: (props) => <CreatePostButton {...props} />,
         }}
       />
-      <Tab.Screen name="Teams" component={TeamsScreen} />
+      <Tab.Screen name="Social" component={TeamsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
