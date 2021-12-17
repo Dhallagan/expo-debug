@@ -11,14 +11,17 @@ import { colors } from "../../constants/dogeStyle";
 import { PostCardComment } from "./PostCardComment";
 import { Content } from "./Content";
 import { CardDivider } from "../../components/CardDivider";
+import { color } from "react-native-elements/dist/helpers";
 
 type PostCardProps = {
   post: Any;
+  scope: String;
   onClickLike?: () => void;
 };
-export function PostCard(props) {
-  const { post } = props;
-  const name = `${post.author?.firstName} ${post.author?.lastName}`;
+export function PostCard(props: PostCardProps) {
+  const { post, scope } = props;
+  const team = `${post.team.name}`;
+  const author = `${post.author?.firstName} ${post.author?.lastName}`;
   const color = `${post.author?.rank}`;
   const progress = `${post.author?.rankProgress}`;
   const teamLink = `/t/${post.team.slug}`;
@@ -33,7 +36,7 @@ export function PostCard(props) {
   }
 
   return (
-    <View style={styles.container}>
+    <View key={post.id} style={styles.container}>
       {/* <Divider
         style={{ borderColor: "rgba(255, 255, 255, 0.05)", marginBottom: 1 }}
       /> */}
@@ -44,7 +47,8 @@ export function PostCard(props) {
         </View>
         <View style={styles.rightHeader}>
           {/* Name of person or team */}
-          <Text style={styles.titleText}>{name}</Text>
+          {scope == "team" && <Text style={styles.teamTitle}>{team}</Text>}
+          <Text style={styles.userTitle}>{author}</Text>
           <Text style={styles.subtitleText}>{`${formatDistanceToNowStrict(
             new Date(post.createdAt)
           )} ago`}</Text>
@@ -61,17 +65,15 @@ export function PostCard(props) {
         {/* Media */}
 
         {post.media.url && (
-          <>
-            {/* <JsonText obj={post.media} /> */}
-            <Image
-              source={image}
-              resizeMode="cover"
-              style={{
-                width: SCREEN_WIDTH - 10,
-                height: desiredHeight,
-              }}
-            />
-          </>
+          // {/* <JsonText obj={post.media} /> */}
+          <Image
+            source={image}
+            resizeMode="cover"
+            style={{
+              width: SCREEN_WIDTH - 10,
+              height: desiredHeight,
+            }}
+          />
         )}
       </View>
 
@@ -109,9 +111,9 @@ export function PostCard(props) {
       <CardDivider />
 
       <View style={{ paddingTop: 5 }}>
-        {post.comments?.map((x) => (
+        {post.comments?.map((x, idx) => (
           <PostCardComment
-            key={x.id}
+            key={idx}
             comment={x}
             // onClickDelete={state.handleClickDelete}
           />
@@ -147,12 +149,16 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#fff",
   },
-  titleText: {
-    color: "#fff",
+  teamTitle: {
+    color: colors.primary500,
+    fontSize: 14,
+  },
+  userTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    color: colors.text,
   },
   subtitleText: {
-    color: "#fff",
+    color: colors.primary500,
   },
 });

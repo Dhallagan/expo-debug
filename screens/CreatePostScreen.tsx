@@ -1,3 +1,4 @@
+import request, { gql } from "graphql-request";
 import React, { useState } from "react";
 import {
   Text,
@@ -10,16 +11,59 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useMutation } from "react-query";
 import { SCREEN_HEIGHT } from "../constants";
 import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
+import { ErrorMessage, Formik } from "formik";
+import { useTokenStore } from "../store/useTokenStore";
+
+const UPSERT_POST = gql`
+  mutation CreatePostCardMutation(
+    $input: UpsertPostInput!
+    $connections: [ID!]!
+  ) {
+    upsertPost(input: $input) {
+      postEdge @prependEdge(connections: $connections) {
+        node {
+          id
+        }
+      }
+    }
+  }
+`;
 
 interface CreatePostModalProps {
   onRequestClose: () => void;
 }
+type UpsertPostInput = {
+  id?: string | null | undefined;
+  team?: string | null | undefined;
+  title?: string | null | undefined;
+  content: string;
+  media?: string | null | undefined;
+};
+
 export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
   onRequestClose,
 }) => {
   const inset = useSafeAreaInsets();
+  let { token } = useTokenStore();
+
+  const mutation = useMutation((input: UpsertPostInput) => {
+    alert(JSON.stringify(input));
+
+    return request(
+      "https://test.thatclass.co/api/",
+      UPSERT_POST,
+      {
+        input,
+      },
+      {
+        Authorization: "Bearer " + token,
+      }
+    );
+  });
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
       <View
@@ -36,33 +80,48 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
             color={"white"}
             style={{ flex: 1, alignSelf: "center" }}
           />
-          <TouchableOpacity style={styles.postButton}>
-            <Text style={styles.titleText}>Post</Text>
-          </TouchableOpacity>
         </View>
 
         <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={{ display: "flex", width: "100%" }}>
-            <TextInput
-              placeholder={"What's on your mind?"}
-              placeholderTextColor={colors.primary300}
-              style={[styles.roomNameEditText]}
-              autoFocus={true}
-              value={""}
-            />
-            <Icon
-              size={28}
-              name="ios-image-outline"
-              color={"white"}
-              style={{ flex: 0 }}
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => onRequestClose()}
+          <Formik
+            initialValues={{
+              content: "",
+            }}
+            onSubmit={(values) => mutation.mutate(values)}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
+            {({ handleChange, handleBlur, handleSubmit, values }) => (
+              <>
+                <View style={{ display: "flex", width: "100%" }}>
+                  <TextInput
+                    style={[styles.roomNameEditText]}
+                    placeholder={"What's on your mind?"}
+                    placeholderTextColor={"white"}
+                    onChangeText={handleChange("content")}
+                    onBlur={handleBlur("content")}
+                    value={values.content}
+                  />
+                  <Icon
+                    size={28}
+                    name="ios-image-outline"
+                    color={"white"}
+                    style={{ flex: 0 }}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.postButton}
+                  onPress={handleSubmit}
+                >
+                  <Text style={styles.titleText}>Post</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => onRequestClose()}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
@@ -88,21 +147,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary600,
   },
   titleText: {
-    // flex:1,
-    // fontFamily: fontFamily.extraBold,
-    fontSize: fontSize.h4,
+    fontSize: fontSize.h2,
     color: colors.text,
     fontWeight: "bold",
     alignSelf: "center",
   },
   roomNameEditText: {
     height: 80,
-    // backgroundColor: colors.primary600,
     paddingHorizontal: 0,
     borderRadius: radius.m,
     marginTop: 5,
     color: colors.text,
-    fontSize: fontSize.h4,
+    fontSize: fontSize.h3,
     flex: 1,
   },
   cancelButton: {
@@ -115,7 +171,7 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: colors.text,
     // fontFamily: fontFamily.regular,
-    fontSize: fontSize.paragraph,
+    fontSize: fontSize.h3,
     fontWeight: "700",
     alignSelf: "flex-end",
     textDecorationLine: "underline",

@@ -1,0 +1,52 @@
+query Feed($team: String, $user: String) {
+  posts(team: $team, user: $user, first: 48) {
+    edges {
+      post: node {
+        id
+        title
+        content
+        media {
+          url
+        }
+        reactions {
+          likes
+          highFives
+          fistBumps
+        }
+        reacted
+        commentsCount
+        comments {
+          content
+          createdAt
+          author {
+            username
+            firstName
+            lastName
+            picture {
+              url
+            }
+            rank
+            rankProgress
+          }
+        }
+        createdAt
+        author {
+          id
+          username
+          firstName
+          lastName
+          picture {
+            url
+          }
+          rank
+          rankProgress
+        }
+        team {
+          id
+          slug
+          name
+        }
+      }
+    }
+  }
+}

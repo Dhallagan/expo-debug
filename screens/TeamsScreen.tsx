@@ -7,7 +7,8 @@ import { useQuery } from "react-query";
 import { TeamCard } from "../components/TeamCard";
 import TitledGradientHeader from "../components/TitleGradientHeader";
 import { colors } from "../constants/dogeStyle";
-import { PostList } from "../modules/feed/feed";
+import { PostList } from "../modules/feed/Feed";
+import SocialTabView from "../modules/social/SocialTabView";
 
 function useTeams() {
   return useQuery("teams", async () => {
@@ -44,13 +45,13 @@ export default function TeamsScreen() {
   }
   return (
     <>
-      <View style={styles.container}>
-        <TitledGradientHeader>Social</TitledGradientHeader>
-        {/* <HypeTitle /> */}
-        {/* <Teams /> */}
-
-        <PostList />
-      </View>
+      {/* <View style={styles.container}> */}
+      <TitledGradientHeader>Social</TitledGradientHeader>
+      {/* <HypeTitle /> */}
+      {/* <Teams /> */}
+      <SocialTabView />
+      {/* <PostList /> */}
+      {/* </View> */}
     </>
   );
 }

@@ -18,7 +18,7 @@ export const Chip: React.FC<ChipProps> = ({
     <TouchableOpacity
       style={[
         (outlined = true
-          ? { backgroundColor: colors.purple }
+          ? { backgroundColor: colors.coral }
           : { backgroundColor: "rgba(255,255,255,0.5)" }),
         {
           borderRadius: 20,
