@@ -1,0 +1,11 @@
+overwrite: true
+schema: "https://test.thatclass.co/api"
+documents: "./**/*.graphql"
+generates:
+  _generated/index.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-query"
+    config:
+      fetcher: graphql-request

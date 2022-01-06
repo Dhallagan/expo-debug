@@ -27,7 +27,7 @@ export function PostCardComment(props: PostCardCommentProps) {
   );
 
   return (
-    <View style={styles.container}>
+    <View key={comment.id} style={styles.container}>
       <View>
         <ProgressAvatar style={{ marginRight: 10 }} />
       </View>

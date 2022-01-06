@@ -1,0 +1,18 @@
+query Classes {
+  classes {
+    pageInfo {
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      node {
+        id
+        title
+        cover {
+          url
+        }
+      }
+    }
+  }
+}
