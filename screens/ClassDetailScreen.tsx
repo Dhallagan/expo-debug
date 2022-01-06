@@ -13,19 +13,71 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { TitledHeader } from "../components/TitledHeader";
 import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
 import { Video } from "expo-av";
-import HypeHeader from "../components/HypeHeader";
-import { color } from "react-native-elements/dist/helpers";
 import { Chip } from "../components/Chip";
 import * as ScreenOrientation from "expo-screen-orientation";
-import { testVideo } from "../assets";
+import { useQuery } from "react-query";
+import request, { gql } from "graphql-request";
+import { endpoint } from "../constants/httpHelper";
+
+function useClasses(cId) {
+  return useQuery(["classDetail", cId], async () => {
+    return await request(
+      `${endpoint}`,
+      gql`
+        query classDetail($classId: ID!) {
+          video(classId: $classId) {
+            name
+            description
+            height
+            width
+            type
+            link
+            src
+          }
+        }
+      `,
+      {classId: cId}
+    );
+  },
+  {
+    enabled: !!cId,
+  }
+  );
+}
 
 interface ClassDetailModalProps {
   onRequestClose: () => void;
+  route: any;
 }
 export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   onRequestClose,
+  route,
 }) => {
+  const video = React.useRef(null);
+  const [status1, setStatus] = React.useState({});
   const inset = useSafeAreaInsets();
+
+  const { status, data, error, isFetching } = useClasses(route.params.classId);
+  console.log('=============v d=======================');
+  console.log(data);
+  console.log('====================================');
+  
+
+  if (status === "loading") {
+    return(
+      <View style={styles.containerLoad}>
+          <Text style={styles.titleText}>Loading...</Text>
+      </View>
+    )
+    return ;
+  }
+  if (status === "error") {
+    return (
+      <View style={styles.containerLoad}>
+          <Text style={styles.titleText}>Oh no... {error.message}</Text>
+      </View>
+    )
+  }
 
   const onFullscreenUpdate = ({ fullscreenUpdate, status }) => {
     console.log(fullscreenUpdate, status);
@@ -45,18 +97,19 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
 
   return (
     <>
-      <TitledHeader showBackButton={true} />
+      <TitledHeader showBackButton={true} title={"Details"} />
       <View style={styles.container}>
-        <Video
-          style={styles.video}
-          source={{
-            uri: "https://196vod-adaptive.akamaized.net/exp=1638911778~acl=%2F6fd8dae0-f112-4f40-9ca9-fae97b769a0b%2F%2A~hmac=2e0bb58c96ade7825e3b81b620c05f8249602096510f2cf4a65a2c1444afc473/6fd8dae0-f112-4f40-9ca9-fae97b769a0b/parcel/audio/93e67425.mp4",
-          }}
-          useNativeControls
-          resizeMode="contain"
-          isLooping
-          onFullscreenUpdate={onFullscreenUpdate}
-        />
+      <Video
+        ref={video}
+        style={styles.video}
+        source={{
+          uri: data.video.src,
+        }}
+        useNativeControls
+        resizeMode="contain"
+        isLooping
+        onPlaybackStatusUpdate={status => setStatus(() => status)}
+      />
         <Text style={styles.titleText}>Feel Like an Olympian</Text>
         <View
           style={{
@@ -114,6 +167,12 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
 };
 
 const styles = StyleSheet.create({
+  containerLoad: {
+    flex: 1,
+    backgroundColor: colors.primary800,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: colors.primary800,
