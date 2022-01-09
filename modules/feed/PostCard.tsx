@@ -150,8 +150,9 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   teamTitle: {
-    color: colors.primary500,
+    color: colors.primary300,
     fontSize: 14,
+    paddingBottom: 2,
   },
   userTitle: {
     fontSize: 18,

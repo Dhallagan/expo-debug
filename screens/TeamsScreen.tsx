@@ -1,5 +1,6 @@
 import request, { gql } from "graphql-request";
 import React from "react";
+import { useEffect } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "react-query";
@@ -23,7 +24,6 @@ function useTeams() {
                 slug
                 name
                 description
-                membership
               }
             }
           }
@@ -35,6 +35,7 @@ function useTeams() {
 
 export default function TeamsScreen() {
   const inset = useSafeAreaInsets();
+
   const { status, data, error, isFetching } = useTeams();
 
   if (isFetching) {

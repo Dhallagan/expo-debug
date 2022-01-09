@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { useQuery, UseQueryOptions, useMutation, UseMutationOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -213,6 +213,7 @@ export type CreateClassPayload = {
 export type CreateTeamInput = {
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
+  picture?: InputMaybe<Scalars['String']>;
   slug?: InputMaybe<Scalars['String']>;
 };
 
@@ -274,6 +275,7 @@ export type Event = Node & Readable & {
   team: Team;
   type: EventType;
   updatedAt?: Maybe<Scalars['String']>;
+  zoom?: Maybe<Scalars['String']>;
 };
 
 
@@ -313,10 +315,11 @@ export type EventEdge = {
   node?: Maybe<Event>;
 };
 
-/** Session or meetup */
+/** Session, Meetup, or Zoom */
 export enum EventType {
   Meetup = 'Meetup',
-  Session = 'Session'
+  Session = 'Session',
+  Zoom = 'Zoom'
 }
 
 export enum EventsFilter {
@@ -725,6 +728,7 @@ export type Root = {
   user?: Maybe<User>;
   users?: Maybe<UserConnection>;
   video?: Maybe<Video>;
+  workoutHistory?: Maybe<WorkoutHistoryConnection>;
 };
 
 
@@ -834,9 +838,18 @@ export type RootVideoArgs = {
   classId: Scalars['ID'];
 };
 
+
+/** The top-level API */
+export type RootWorkoutHistoryArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type SaveUploadPayload = {
   __typename?: 'SaveUploadPayload';
   class?: Maybe<Class>;
+  team?: Maybe<Team>;
   user?: Maybe<User>;
 };
 
@@ -848,6 +861,7 @@ export type ScheduleEventInput = {
   name?: InputMaybe<Scalars['String']>;
   team: Scalars['String'];
   type: EventType;
+  zoom?: InputMaybe<Scalars['String']>;
 };
 
 export type ScheduleEventPayload = {
@@ -856,8 +870,6 @@ export type ScheduleEventPayload = {
 };
 
 export type SignInInput = {
-  /** Access using token based authentication */
-  accessToken?: InputMaybe<Scalars['Boolean']>;
   /** User's password */
   password?: InputMaybe<Scalars['String']>;
   /** Username or email */
@@ -878,8 +890,9 @@ export type Team = Node & {
   description?: Maybe<Scalars['String']>;
   /** The ID of an object */
   id: Scalars['ID'];
-  membership?: Maybe<MembershipStatus>;
+  membership?: Maybe<TeamMember>;
   name: Scalars['String'];
+  picture: Picture;
   slug: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -981,7 +994,8 @@ export enum UploadType {
   ClassCoverImage = 'ClassCoverImage',
   ClassVideoImage = 'ClassVideoImage',
   PostMediaFile = 'PostMediaFile',
-  ProfilePicture = 'ProfilePicture'
+  ProfilePicture = 'ProfilePicture',
+  TeamCoverImage = 'TeamCoverImage'
 }
 
 export type UpsertCommentInput = {
@@ -1102,6 +1116,45 @@ export type VideoModifiedArgs = {
   format?: InputMaybe<Scalars['String']>;
 };
 
+/** Log of workouts and their statuses */
+export type WorkoutHistory = Node & {
+  __typename?: 'WorkoutHistory';
+  class?: Maybe<Class>;
+  completionPercent?: Maybe<Scalars['Float']>;
+  date?: Maybe<Scalars['String']>;
+  elapsedDuration: Scalars['Int'];
+  event?: Maybe<Event>;
+  /** The ID of an object */
+  id: Scalars['ID'];
+  status?: Maybe<Scalars['String']>;
+  user: User;
+};
+
+
+/** Log of workouts and their statuses */
+export type WorkoutHistoryDateArgs = {
+  format?: InputMaybe<Scalars['String']>;
+};
+
+/** A connection to a list of items. */
+export type WorkoutHistoryConnection = {
+  __typename?: 'WorkoutHistoryConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<WorkoutHistoryEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type WorkoutHistoryEdge = {
+  __typename?: 'WorkoutHistoryEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge */
+  node?: Maybe<WorkoutHistory>;
+};
+
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1114,6 +1167,13 @@ export type FeedQueryVariables = Exact<{
 
 
 export type FeedQuery = { __typename?: 'Root', posts?: { __typename?: 'PostConnection', edges?: Array<{ __typename?: 'PostEdge', post?: { __typename?: 'Post', id: string, title: string, content: string, reacted?: Array<Reaction> | null | undefined, commentsCount: number, createdAt?: string | null | undefined, media: { __typename?: 'Picture', url?: string | null | undefined }, reactions: { __typename?: 'Reactions', likes: number, highFives: number, fistBumps: number }, comments: Array<{ __typename?: 'Comment', content: string, createdAt?: string | null | undefined, author: { __typename?: 'User', username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } } }>, author: { __typename?: 'User', id: string, username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } }, team: { __typename?: 'Team', id: string, slug: string, name: string } } | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+
+export type CreatePostCardMutationMutationVariables = Exact<{
+  input: UpsertPostInput;
+}>;
+
+
+export type CreatePostCardMutationMutation = { __typename?: 'Mutation', upsertPost?: { __typename?: 'UpsertPostPayload', postEdge?: { __typename?: 'PostEdge', node?: { __typename?: 'Post', id: string } | null | undefined } | null | undefined } | null | undefined };
 
 
 export const ClassesDocument = `
@@ -1216,5 +1276,29 @@ export const useFeedQuery = <
     useQuery<FeedQuery, TError, TData>(
       variables === undefined ? ['Feed'] : ['Feed', variables],
       fetcher<FeedQuery, FeedQueryVariables>(client, FeedDocument, variables, headers),
+      options
+    );
+export const CreatePostCardMutationDocument = `
+    mutation CreatePostCardMutation($input: UpsertPostInput!) {
+  upsertPost(input: $input) {
+    postEdge {
+      node {
+        id
+      }
+    }
+  }
+}
+    `;
+export const useCreatePostCardMutationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreatePostCardMutationMutation, TError, CreatePostCardMutationMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreatePostCardMutationMutation, TError, CreatePostCardMutationMutationVariables, TContext>(
+      'CreatePostCardMutation',
+      (variables?: CreatePostCardMutationMutationVariables) => fetcher<CreatePostCardMutationMutation, CreatePostCardMutationMutationVariables>(client, CreatePostCardMutationDocument, variables, headers)(),
       options
     );

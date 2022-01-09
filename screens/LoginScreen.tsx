@@ -75,6 +75,7 @@ export default function LoginScreen() {
       })
       .catch((errors) => {
         const err = errors.response.errors?.[0];
+        alert(JSON.stringify(errors));
         setState((prev) => ({
           ...prev,
           errors: err?.errors ?? (err ? { _: [err.message] } : {}),
@@ -126,7 +127,6 @@ export default function LoginScreen() {
         initialValues={{
           username: "dhallagan",
           password: "password",
-          accessToken: true,
         }}
         onSubmit={(values) => mutation.mutate(values)}
       >

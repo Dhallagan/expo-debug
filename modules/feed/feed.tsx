@@ -124,7 +124,7 @@ export function PostList(props: FeedProps) {
     <ScrollView contentContainerStyle={styles.container}>
       {data.posts?.edges?.map((edge, idx) => {
         return (
-          <PostCard key={idx} post={edge.post} scope={team ? "team" : "user"} />
+          <PostCard key={idx} post={edge.post} scope={team ? "user" : "team"} />
         );
       })}
     </ScrollView>

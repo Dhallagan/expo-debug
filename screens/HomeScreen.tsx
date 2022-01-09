@@ -120,7 +120,11 @@ export default function HomeScreen() {
 
         <Section
           style={{ marginBottom: 40 }}
-          title={"You got a couple upcoming events"}
+          title={
+            data.events?.edges[0]
+              ? "You got a couple upcoming events"
+              : "No events scheduled"
+          }
           children={
             <ScrollView
               horizontal={true}
@@ -190,7 +194,7 @@ export default function HomeScreen() {
           </Section>
         </Card> */}
 
-        <Section
+        {/* <Section
           title={"Recent Friend Achievements"}
           children={
             <>
@@ -209,7 +213,7 @@ export default function HomeScreen() {
               <Button title="View Feed" />
             </>
           }
-        />
+        /> */}
 
         {/* <Section
           title={"Featured Studio"}
