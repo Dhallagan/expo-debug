@@ -4,22 +4,28 @@ import { color } from "react-native-elements/dist/helpers";
 import { colors } from "../constants/dogeStyle";
 
 export type ChipProps = {
+  id: number;
   title: string;
   outlined: boolean;
   onPress?: () => void;
+  handleCategoryPress?: any;
+  selectedCategory: number;
 };
 
 export const Chip: React.FC<ChipProps> = ({
+  id,
   title,
-  outlined = false,
+  outlined,
   onPress,
+  handleCategoryPress,
+  selectedCategory,
 }) => {
   return (
     <TouchableOpacity
       style={[
-        (outlined = true
-          ? { backgroundColor: colors.coral }
-          : { backgroundColor: "rgba(255,255,255,0.5)" }),
+        (outlined || selectedCategory === id
+          ? { backgroundColor: "rgba(255,255,255,0.2)" }
+          : { backgroundColor: "rgba(255,255,255,0.0)" }),
         {
           borderRadius: 20,
           borderStyle: "solid",
@@ -29,6 +35,8 @@ export const Chip: React.FC<ChipProps> = ({
           margin: 4,
         },
       ]}
+      onPress={() => handleCategoryPress(id)}
+      key={id}
     >
       <Text style={{ color: "white" }}>{title}</Text>
     </TouchableOpacity>
