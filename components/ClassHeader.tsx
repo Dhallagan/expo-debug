@@ -27,15 +27,6 @@ export default function ClassHeader(props) {
               marginRight: 20,
             }}
           ></View>
-
-          <ClassOptionsButton 
-            checkFilter={props.checkFilter}
-            setCheckFilter={props.setCheckFilter}
-            filterEquipment={props.filterEquipment}
-            setFilterEquipment={props.setFilterEquipment}
-            filterInstructors={props.filterInstructors}
-            setFilterInstructors={props.setFilterInstructors}
-          />
         </View>
       </View>
     </>

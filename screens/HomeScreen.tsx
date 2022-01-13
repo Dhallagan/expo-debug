@@ -107,10 +107,18 @@ export default function HomeScreen() {
   const { status, data, error, isFetching } = useHomeScreen(token);
 
   if (status === "loading") {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
   if (status === "error") {
-    return <Text>Oh no... {error.message}</Text>;
+    return (
+      <View style={styles.container}>
+        <Text>Oh no... {error.message}</Text>
+      </View>
+    );
   }
   return (
     <>
@@ -236,6 +244,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingHorizontal: 5,
+    backgroundColor: colors.primary900,
   },
   teamsContainer: {
     flex: 1,

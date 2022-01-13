@@ -7,6 +7,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -20,28 +21,30 @@ import request, { gql } from "graphql-request";
 import { endpoint } from "../constants/httpHelper";
 
 function useClasses(cId) {
-  return useQuery(["classDetail", cId], async () => {
-    return await request(
-      `${endpoint}`,
-      gql`
-        query classDetail($classId: ID!) {
-          video(classId: $classId) {
-            name
-            description
-            height
-            width
-            type
-            link
-            src
+  return useQuery(
+    ["classDetail", cId],
+    async () => {
+      return await request(
+        `${endpoint}`,
+        gql`
+          query classDetail($classId: ID!) {
+            video(classId: $classId) {
+              name
+              description
+              height
+              width
+              type
+              link
+              src
+            }
           }
-        }
-      `,
-      {classId: cId}
-    );
-  },
-  {
-    enabled: !!cId,
-  }
+        `,
+        { classId: cId }
+      );
+    },
+    {
+      enabled: !!cId,
+    }
   );
 }
 
@@ -58,25 +61,24 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   const inset = useSafeAreaInsets();
 
   const { status, data, error, isFetching } = useClasses(route.params.classId);
-  console.log('=============v d=======================');
+  console.log("=============v d=======================");
   console.log(data);
-  console.log('====================================');
-  
+  console.log("====================================");
 
   if (status === "loading") {
-    return(
+    return (
       <View style={styles.containerLoad}>
-          <Text style={styles.titleText}>Loading...</Text>
+        <Text style={styles.titleText}>Loading...</Text>
       </View>
-    )
-    return ;
+    );
+    return;
   }
   if (status === "error") {
     return (
       <View style={styles.containerLoad}>
-          <Text style={styles.titleText}>Oh no... {error.message}</Text>
+        <Text style={styles.titleText}>Oh no... {error.message}</Text>
       </View>
-    )
+    );
   }
 
   const onFullscreenUpdate = ({ fullscreenUpdate, status }) => {
@@ -96,20 +98,20 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   };
 
   return (
-    <>
+    <SafeAreaView>
       <TitledHeader showBackButton={true} title={"Details"} />
       <View style={styles.container}>
-      <Video
-        ref={video}
-        style={styles.video}
-        source={{
-          uri: data.video.src,
-        }}
-        useNativeControls
-        resizeMode="contain"
-        isLooping
-        onPlaybackStatusUpdate={status => setStatus(() => status)}
-      />
+        <Video
+          ref={video}
+          style={styles.video}
+          source={{
+            uri: data.video.src,
+          }}
+          useNativeControls
+          resizeMode="contain"
+          isLooping
+          onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        />
         <Text style={styles.titleText}>Feel Like an Olympian</Text>
         <View
           style={{
@@ -162,7 +164,7 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
           <Chip title="Popular" />
         </View>
       </View>
-    </>
+    </SafeAreaView>
   );
 };
 

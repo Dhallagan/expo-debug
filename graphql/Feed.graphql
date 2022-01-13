@@ -1,5 +1,5 @@
 query Feed($team: String, $user: String) {
-  posts(team: $team, user: $user, first: 48) {
+  posts(team: $team, user: $user, first: 2) {
     edges {
       post: node {
         id

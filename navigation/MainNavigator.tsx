@@ -5,9 +5,11 @@ import NotificationsScreen from "../screens/SettingsScreen";
 import MainScreen from "../screens/MainScreen";
 import { ClassDetailScreen } from "../screens/ClassDetailScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import { PostDetailScreen } from "../screens/PostDetailScreen";
 
 export default function MainNavigator() {
   const Stack = createStackNavigator();
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -28,6 +30,11 @@ export default function MainNavigator() {
       <Stack.Screen
         name="ClassDetail"
         component={ClassDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostDetail"
+        component={PostDetailScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

@@ -27,13 +27,13 @@ export default function SocialTabView() {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "teams", title: "Activity" },
-    { key: "following", title: "Following" },
+    // { key: "following", title: "Following" },
   ]);
 
   const renderScene = SceneMap({
     teams: FirstRoute,
-    upcoming: SecondRoute,
-    following: FirstRoute,
+    // upcoming: SecondRoute,
+    // following: FirstRoute,
   });
 
   const renderTabBar = (props) => (

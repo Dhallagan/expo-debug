@@ -12,13 +12,25 @@ import { PostCardComment } from "./PostCardComment";
 import { Content } from "./Content";
 import { CardDivider } from "../../components/CardDivider";
 import { color } from "react-native-elements/dist/helpers";
+import { createIconSetFromFontello } from "react-native-vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 type PostCardProps = {
   post: Any;
   scope: String;
   onClickLike?: () => void;
 };
+
+function resizeURL(img) {
+  return (
+    "https://test.thatclass.co/img/w_" +
+    SCREEN_WIDTH +
+    "/p/" +
+    img.split("/").pop()
+  );
+}
 export function PostCard(props: PostCardProps) {
+  const navigation = useNavigation();
   const { post, scope } = props;
   const team = `${post.team.name}`;
   const author = `${post.author?.firstName} ${post.author?.lastName}`;
@@ -26,14 +38,15 @@ export function PostCard(props: PostCardProps) {
   const progress = `${post.author?.rankProgress}`;
   const teamLink = `/t/${post.team.slug}`;
   const authorLink = `/@${post.author?.username}`;
-  const image = { uri: post.media.url };
+  const image = { uri: resizeURL(post.media.url) };
 
   const [desiredHeight, setDesiredHeight] = React.useState(0);
   if (post.media.url) {
-    Image.getSize(post.media.url, (width, height) => {
+    Image.getSize(resizeURL(post.media.url), (width, height) => {
       setDesiredHeight((SCREEN_WIDTH / width) * height);
     });
   }
+  console.log(JSON.stringify(image));
 
   return (
     <View key={post.id} style={styles.container}>
@@ -65,15 +78,23 @@ export function PostCard(props: PostCardProps) {
         {/* Media */}
 
         {post.media.url && (
-          // {/* <JsonText obj={post.media} /> */}
-          <Image
-            source={image}
-            resizeMode="cover"
-            style={{
-              width: SCREEN_WIDTH - 10,
-              height: desiredHeight,
-            }}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("PostDetail", {
+                post: post,
+                autofocus: false,
+              })
+            }
+          >
+            <Image
+              source={image}
+              resizeMode="cover"
+              style={{
+                width: SCREEN_WIDTH - 10,
+                height: desiredHeight,
+              }}
+            />
+          </TouchableOpacity>
         )}
       </View>
 
@@ -82,28 +103,53 @@ export function PostCard(props: PostCardProps) {
       <View style={styles.topContainer}>
         {/*  */}
         <TouchableOpacity
-          style={{ padding: 10, flexDirection: "row", alignItems: "center" }}
+          style={{
+            padding: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            color: "#fff",
+            borderColor: colors.primary600,
+            borderWidth: 2,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 10,
+          }}
         >
-          <Text style={{ fontSize: 20 }}>✋</Text>
-          {post.reactions.highFives > 0 ? (
-            <Text style={{ color: "#fff", fontSize: 16 }}>
-              {post.reactions.highFives} Fives
+          <Text style={{ color: "#fff", fontSize: 14 }}>✋</Text>
+          {post.reactions.highFives ? (
+            <Text style={{ color: "#fff", fontSize: 14 }}>
+              {post.reactions.highFives}
             </Text>
           ) : (
-            <Text style={{ color: "#fff", fontSize: 18 }}></Text>
+            <Text style={{ color: "#fff", fontSize: 14 }}></Text>
           )}
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={{ padding: 10, flexDirection: "row", alignItems: "center" }}
+          style={{
+            padding: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            borderColor: colors.primary600,
+            borderWidth: 2,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 10,
+            margin: 5,
+          }}
+          onPress={() =>
+            navigation.navigate("PostDetail", {
+              post: post,
+            })
+          }
         >
-          <Text style={{ fontSize: 20 }}>💬</Text>
+          <Text>💬</Text>
           {post.commentsCount > 0 ? (
-            <Text style={{ color: "#fff", fontSize: 16 }}>
+            <Text style={{ color: "#fff", fontSize: 14 }}>
               {post.commentsCount} Comments
             </Text>
           ) : (
-            <Text style={{ color: "#fff", fontSize: 18 }}>0 Comments</Text>
+            <Text style={{ color: "#fff", fontSize: 14 }}> 0 Comments</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -127,7 +173,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: SCREEN_WIDTH - 10,
-    justifyContent: "center",
+    // justifyContent: "center",
     marginVertical: 5,
     backgroundColor: colors.primary800,
     paddingBottom: 20,
@@ -161,5 +207,14 @@ const styles = StyleSheet.create({
   },
   subtitleText: {
     color: colors.primary500,
+  },
+  reactionContainer: {
+    fontSize: 20,
+    color: "#fff",
+    borderColor: colors.primary600,
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
   },
 });

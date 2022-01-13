@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  RefreshControl,
+  VirtualizedList,
+  SafeAreaView,
 } from "react-native";
 import { useQuery } from "react-query";
 import { graphql, useFragment } from "react-relay";
@@ -17,76 +20,15 @@ import { PostCard } from "./PostCard";
 import { useLike } from "./PostList.hooks";
 import { useFeedQuery } from "../../_generated";
 import { QueryClient } from "../../core/QueryClient";
-
-// function useFeed(token, team, user) {
-//   return useQuery("feed", async () => {
-//     return await request(
-//       "https://test.thatclass.co/api/",
-//       gql`
-//         query Feed($team: String, $user: String) {
-//           posts(team: $team, user: $user, first: 48) {
-//             edges {
-//               post: node {
-//                 id
-//                 title
-//                 content
-//                 media {
-//                   url
-//                 }
-//                 reactions {
-//                   likes
-//                   highFives
-//                   fistBumps
-//                 }
-//                 reacted
-//                 commentsCount
-//                 comments {
-//                   content
-//                   createdAt
-//                   author {
-//                     username
-//                     firstName
-//                     lastName
-//                     picture {
-//                       url
-//                     }
-//                     rank
-//                     rankProgress
-//                   }
-//                 }
-//                 createdAt
-//                 author {
-//                   id
-//                   username
-//                   firstName
-//                   lastName
-//                   picture {
-//                     url
-//                   }
-//                   rank
-//                   rankProgress
-//                 }
-//                 team {
-//                   id
-//                   slug
-//                   name
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       `,
-//       { team: team, user: user },
-//       {
-//         Authorization: "Bearer " + token,
-//       }
-//     );
-//   });
-// }
+import { Loading } from "../../components/Loading";
 
 type FeedProps = {
   team?: String | undefined;
   user?: String | undefined;
+};
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
 export function PostList(props: FeedProps) {
@@ -96,21 +38,26 @@ export function PostList(props: FeedProps) {
     return <Text>Error team or user not supplied</Text>;
   }
 
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
   const client = QueryClient();
-  const { status, data, error, isFetching } = useFeedQuery(client, {
+  const { status, data, error, isFetching, fetch } = useFeedQuery(client, {
     user: user,
     team: team,
+    after: 1,
   });
 
   // const { posts } = useFragment(postsFragment, rootRef);
   // const like = useLike();
 
   if (status === "loading") {
-    return (
-      <View style={styles.container}>
-        <Text style={{ color: colors.text }}>Loading...</Text>
-      </View>
-    );
+    return <Loading />;
   }
   if (status === "error") {
     return (

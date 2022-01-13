@@ -24,7 +24,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
   const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   return (
-    <View style={[styles.container, { paddingTop: inset.top }]}>
+    <View style={[styles.container]}>
       {showBackButton && (
         <TouchableOpacity
           style={styles.leftContainer}

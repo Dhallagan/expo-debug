@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, Text, View, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  View,
+  ScrollView,
+} from "react-native";
 import Modal from "react-native-modal";
 import { ClassOptionsScreen } from "../../screens/ClassOptionsScreen";
 import { CreatePostScreen } from "../../screens/CreatePostScreen";
 import Icon from "react-native-vector-icons/Ionicons";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
-import { colors, fontFamily, fontSize, radius } from "../../constants/dogeStyle";
+import {
+  colors,
+  fontFamily,
+  fontSize,
+  radius,
+} from "../../constants/dogeStyle";
 import { useQuery } from "react-query";
 import request, { gql } from "graphql-request";
 import { endpoint } from "../../constants/httpHelper";
@@ -15,67 +26,77 @@ const useFilters = () => {
     return await request(
       `${endpoint}`,
       gql`
-      query OptionsQuery {
-        classTypes {
-          id
-          name
-        }
-        equipment {
-          id
-          name
-        }
-        instructors {
-          id
-          displayName
-          user {
-            username
-            picture {
-              url
-            }
+        query OptionsQuery {
+          classTypes {
             id
+            name
+          }
+          equipment {
+            id
+            name
+          }
+          instructors {
+            id
+            displayName
+            user {
+              username
+              picture {
+                url
+              }
+              id
+            }
           }
         }
-      }
       `
     );
   });
-}
+};
 
 const useAppliedFilters = () => {
   return useQuery("queryClasses", async () => {
     return await request(
       `${endpoint}`,
       gql`
-      query queryClasses ($instructor: String, $equipment: String, $type: String, $first: Int) {
-        classes(instructor: $instructor, equipment: $equipment, type: $type, first: $first) {
-          edges {
-            class: node {
-              id
-              title
-              cover {
-                url
-              }
-              duration
-              instructors {
+        query queryClasses(
+          $instructor: String
+          $equipment: String
+          $type: String
+          $first: Int
+        ) {
+          classes(
+            instructor: $instructor
+            equipment: $equipment
+            type: $type
+            first: $first
+          ) {
+            edges {
+              class: node {
                 id
-                displayName
-                user {
-                  username
+                title
+                cover {
+                  url
+                }
+                duration
+                instructors {
+                  id
+                  displayName
+                  user {
+                    username
+                  }
                 }
               }
             }
           }
         }
-      }
       `
     );
   });
-}
+};
 
 const onApplyFilters = () => {
   // const { status, data, error, isFetching } = useAppliedFilters()
   // console.log('filtered Data',data);
-}
+};
 
 interface CreatePostModalProps {
   onRequestClose: () => void;
@@ -85,12 +106,12 @@ interface CreatePostModalProps {
   setFilterInstructors: any;
 }
 
-export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
+export const ClassOptionsButton: React.FC<CreatePostModalProps> = ({
   onRequestClose,
   checkFilter,
   setCheckFilter,
   filterInstructors,
-  setFilterInstructors
+  setFilterInstructors,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -99,67 +120,75 @@ export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
   const [filterEquipment, setFilterEquipment] = useState();
   const [isRefresh, setIsRefresh] = useState(false);
   useEffect(() => {
-      if (status === 'success' && data) {
-        // setIsRefresh(!isRefresh)
-      const classDatas = data && data?.classTypes?.map(
-        (item: { id: any; name: any; })=>(
-          {id: item.id, label:item.name, checked:false}
-        ));
+    if (status === "success" && data) {
+      // setIsRefresh(!isRefresh)
+      const classDatas =
+        data &&
+        data?.classTypes?.map((item: { id: any; name: any }) => ({
+          id: item.id,
+          label: item.name,
+          checked: false,
+        }));
       const equipments = data?.equipment?.map(
-        (item: { id: any; name: any; })=>(
-          {id: item.id, label:item.name, checked:false}
-        ));
+        (item: { id: any; name: any }) => ({
+          id: item.id,
+          label: item.name,
+          checked: false,
+        })
+      );
       const instructors = data?.instructors?.map(
-        (item: { id: any; displayName: any; })=>(
-          {id: item.id, label:item.displayName, checked:false}
-        ));
+        (item: { id: any; displayName: any }) => ({
+          id: item.id,
+          label: item.displayName,
+          checked: false,
+        })
+      );
       setCheckFilter(classDatas);
       setFilterEquipment(equipments);
       setFilterInstructors(instructors);
-      }
-  }, [status, data])
+    }
+  }, [status, data]);
 
   const onChecked = (index: number) => {
     let dummydata1 = checkFilter;
     dummydata1[index].checked = !dummydata1[index].checked;
     setCheckFilter(dummydata1);
-  }
+  };
 
   const onEquipmentChecked = (index: number) => {
     let dummydata = filterEquipment;
     dummydata[index].checked = !dummydata[index].checked;
     setFilterEquipment(dummydata);
-  }
+  };
 
   const onInstructorChecked = (index: number) => {
     let dummydata = filterInstructors;
     dummydata[index].checked = !dummydata[index].checked;
     setFilterInstructors(dummydata);
-  }
+  };
 
   // console.log(checkFilter);
-  
 
-  const instructor = 'Manta Z';
-  const equipment = 'Box';
-  const type = 'Cycle';
+  const instructor = "Manta Z";
+  const equipment = "Box";
+  const type = "Cycle";
   const first = 2;
 
   if (status === "loading") {
-    return(
+    return (
       <View style={styles.containerLoad}>
-          <Text style={styles.titleText}>Loading...</Text>
+        <Text style={styles.titleText}>Loading...</Text>
       </View>
-    )
+    );
   }
   if (status === "error") {
     return (
       <View style={styles.containerLoad}>
-          <Text style={styles.titleText}>Oh no... {error.message}</Text>
+        <Text style={styles.titleText}>Oh no... {error.message}</Text>
       </View>
-    )
+    );
   }
-  
+
   return (
     <>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -170,7 +199,7 @@ export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
         isVisible={modalVisible}
         onBackdropPress={() => setModalVisible(false)}
         style={styles.contentView}
-      > 
+      >
         <View style={[styles.container, { paddingBottom: 20, paddingTop: 20 }]}>
           <View style={styles.topContainer}>
             <TouchableOpacity
@@ -187,20 +216,20 @@ export const ClassOptionsButton: React.FC<CreatePostModalProps>= ({
             </TouchableOpacity>
           </View>
           <ScrollView keyboardShouldPersistTaps="handled">
-            <ClassOptionsScreen 
-              onRequestClose={() => setModalVisible(false)} 
+            <ClassOptionsScreen
+              onRequestClose={() => setModalVisible(false)}
               checkFilter={checkFilter}
               onChecked={onChecked}
               title={"Class Types"}
             />
-            <ClassOptionsScreen 
-              onRequestClose={() => setModalVisible(false)} 
+            <ClassOptionsScreen
+              onRequestClose={() => setModalVisible(false)}
               checkFilter={filterEquipment}
               onChecked={onEquipmentChecked}
               title={"Equipment"}
             />
-            <ClassOptionsScreen 
-              onRequestClose={() => setModalVisible(false)} 
+            <ClassOptionsScreen
+              onRequestClose={() => setModalVisible(false)}
               checkFilter={filterInstructors}
               onChecked={onInstructorChecked}
               title={"Instructors"}

@@ -38,8 +38,10 @@ export default function TeamsScreen() {
 
   const { status, data, error, isFetching } = useTeams();
 
-  if (isFetching) {
-    return <Text>Loading...</Text>;
+  if (status === "loading") {
+    return (
+      <View style={styles.containerLoad}>{/* <Text>Loading...</Text> */}</View>
+    );
   }
   if (error) {
     return <Text>Oh no... {error.message}</Text>;
@@ -60,6 +62,12 @@ export default function TeamsScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primary900,
+  },
+  containerLoad: {
+    flex: 1,
+    backgroundColor: colors.primary800,
+    justifyContent: "center",
+    alignItems: "center",
   },
   topNavigation: {
     paddingTop: 10,

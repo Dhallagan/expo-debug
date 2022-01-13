@@ -44,59 +44,61 @@ function useClasses() {
 const categories = [
   {
     id: 1,
-    title: 'All',
+    title: "All",
   },
   {
     id: 2,
-    title: 'Brand New',
+    title: "Brand New",
   },
   {
     id: 3,
-    title: 'Trending',
+    title: "Trending",
   },
   {
     id: 4,
-    title: 'Favourite',
+    title: "Favorite",
   },
 ];
 
 function useAppliedFilters(instructor, isFilters) {
-  return useQuery(["queryClasses", instructor], async () => {
-    return await request(
-      `${endpoint}`,
-      gql`
-      query queryClasses($instructor: String){
-        classes(instructor: $instructor) {
-          pageInfo {
-            startCursor
-            endCursor
-          }
-          totalCount
-          edges {
-            node {
-              id
-              title
-              cover {
-                url
+  return useQuery(
+    ["queryClasses", instructor],
+    async () => {
+      return await request(
+        `${endpoint}`,
+        gql`
+          query queryClasses($instructor: String) {
+            classes(instructor: $instructor) {
+              pageInfo {
+                startCursor
+                endCursor
               }
-              instructors {
-                id
-                user {
-                  username
+              totalCount
+              edges {
+                node {
+                  id
+                  title
+                  cover {
+                    url
+                  }
+                  instructors {
+                    id
+                    user {
+                      username
+                    }
+                  }
                 }
               }
             }
           }
-        }
-      }
-      `,
-      {instructor: instructor}
-    );
-  },
-  {
-    // enabled: !!instructor || !!equipment || !!type || !!first,
-    enabled: !!isFilters
-  }
+        `,
+        { instructor: instructor }
+      );
+    },
+    {
+      // enabled: !!instructor || !!equipment || !!type || !!first,
+      enabled: !!isFilters,
+    }
   );
 }
 
@@ -111,41 +113,42 @@ export default function ClassesScreen(props) {
   const [filterInstructors, setFilterInstructors] = useState();
 
   const { status, data, error, isFetching } = useClasses();
-  const result = useAppliedFilters("steph,mantas", isFilters);
-  console.log('filter data', result.data);
+  const result = useAppliedFilters(filterInstructors, isFilters);
+  console.log("filter data", result.data);
 
   if (status === "loading") {
-    return(
+    return (
       <View style={styles.containerLoad}>
-          <Text style={styles.titleText}>Loading...</Text>
+        <Text style={styles.titleText}>Loading...</Text>
       </View>
-    )
+    );
   }
   if (status === "error") {
     return (
       <View style={styles.containerLoad}>
-          <Text style={styles.titleText}>Oh no... {error.message}</Text>
+        <Text style={styles.titleText}>Oh no... {error.message}</Text>
       </View>
-    )
+    );
   }
   // useEffect(() => {
-    
+
   //   console.log('filter data', data);
   // }, [isFilters]);
 
-  const handleCategoryPress = id => {
+  const handleCategoryPress = (id) => {
     console.log(id);
     setSelectedCategory(id);
-  }
+  };
 
-  console.log('=============ck=======================');
-  console.log(filterInstructors?.map(i => i.label));
-  console.log('====================================');
+  console.log("=============ck=======================");
+  console.log(filterInstructors?.map((i) => i.label));
+  console.log("====================================");
 
   return (
     <>
-      <ClassHeader 
-        title={"Classes"} style={{ color: "white" }}
+      <ClassHeader
+        title={"Classes"}
+        style={{ color: "white" }}
         checkFilter={checkFilter}
         setCheckFilter={setCheckFilter}
         filterInstructors={filterInstructors}
@@ -156,25 +159,33 @@ export default function ClassesScreen(props) {
       <View style={styles.tagsContainer}>
         {categories?.map((item, index) => (
           <View key={index}>
-            <Chip id={item.id} title={item.title} outlined={false} handleCategoryPress={handleCategoryPress} selectedCategory={selectedCategory} />
+            <Chip
+              id={item.id}
+              title={item.title}
+              outlined={false}
+              handleCategoryPress={handleCategoryPress}
+              selectedCategory={selectedCategory}
+            />
           </View>
         ))}
       </View>
       <ScrollView style={styles.container}>
-        {data.classes && data.classes.edges.map((x: any, index: any) => (
+        {data.classes &&
+          data.classes.edges.map((x: any, index: any) => (
             <View key={index}>
               <ClassCard
                 key={index}
                 id={x.node.id}
                 title={x.node.title}
                 image={x.node.cover?.url}
-                onSelect={() => props.navigation.navigate('ClassDetail', {
-                  classId: x.node.id,
-                })}
+                onSelect={() =>
+                  props.navigation.navigate("ClassDetail", {
+                    classId: x.node.id,
+                  })
+                }
               />
             </View>
-          )
-        )}
+          ))}
       </ScrollView>
     </>
   );

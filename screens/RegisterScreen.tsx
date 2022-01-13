@@ -14,19 +14,18 @@ import { colors } from "../constants/dogeStyle";
 
 import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
-import { images } from "../assets/";
+import { images } from "../assets";
 import { ErrorMessage, Formik } from "formik";
 import { Button } from "../components/Button";
 import { useTokenStore } from "../store/useTokenStore";
-import { useSignIn } from "../queries";
 import { useMutation } from "react-query";
 import request, { gql } from "graphql-request";
-import JsonText from "../components/JsonText";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
+import { endpoint } from "../constants/httpHelper";
 
-const SIGN_IN = gql`
-  mutation LoginMutation($input: SignInInput!) {
-    signIn(input: $input) {
+const CREATE_USER = gql`
+  mutation RegisterMutation($input: CreateUserInput!) {
+    createUser(input: $input) {
       user {
         id
         email
@@ -39,55 +38,63 @@ const SIGN_IN = gql`
         timeZone
         locale
       }
-      accessToken
     }
   }
 `;
-type SignInInput = {
-  username?: string | null | undefined;
-  password?: string | null | undefined;
-  accessToken: true;
+
+type CreateUserInput = {
+  username: "";
+  email: "";
+  password: "";
+  firstName: "";
+  lastName: "";
+  idToken: "";
 };
 
 const initialState = {
   input: {
     username: "",
+    email: "",
     password: "",
-  } as SignInInput,
-  errors: {} as Record<keyof SignInInput | "_", string[] | undefined>,
+    firstName: "",
+    lastName: "",
+    idToken: "",
+  } as CreateUserInput,
+  errors: {} as Record<keyof CreateUserInput | "_", string[] | undefined>,
   loading: false,
 };
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
   let { login, logout } = useTokenStore();
   let { setMe } = useCurrentUserStore();
   const navigation = useNavigation();
   const [state, setState] = React.useState(initialState);
 
-  const mutation = useMutation((input: SignInInput) => {
-    return request("https://test.thatclass.co/api/", SIGN_IN, {
+  const mutation = useMutation((input: CreateUserInput) => {
+    return request(endpoint, CREATE_USER, {
       input,
     })
       .then((res) => {
-        if (res.signIn?.user) {
-          setMe(res.signIn);
-          login(res.signIn?.accessToken);
+        if (res.createUser?.user) {
+          setMe(res.createUser?.user);
+          login(res.createUser?.accessToken);
         }
       })
       .catch((errors) => {
+        console.log(errors);
         const err = errors.response.errors?.[0];
         alert(JSON.stringify(errors));
-        setState((prev) => ({
-          ...prev,
-          errors: err?.errors ?? (err ? { _: [err.message] } : {}),
-        }));
+        // setState((prev) => ({
+        //   ...prev,
+        //   errors: err?.errors ?? (err ? { _: [err.message] } : {}),
+        // }));
       });
   });
 
   return (
     <View style={Styles.container}>
       <View style={Styles.logoContainer}>
-        <Text style={Styles.loginHeader}>Log In</Text>
+        <Text style={Styles.loginHeader}>Register</Text>
         {/* <Image source={images.logo}  />s */}
       </View>
 
@@ -126,8 +133,11 @@ export default function LoginScreen() {
 
       <Formik
         initialValues={{
-          username: "dhallagan",
+          username: "dhallagantest",
+          email: "dhallagantest@msn.com",
           password: "password",
+          firstName: "DylanTest",
+          lastName: "HallaganTest",
         }}
         onSubmit={(values) => mutation.mutate(values)}
       >
@@ -136,11 +146,41 @@ export default function LoginScreen() {
             <View style={Styles.userNameContainer}>
               <TextInput
                 style={Styles.userNameInput}
-                placeholder="Username or email"
+                placeholder="First Name"
+                placeholderTextColor={"white"}
+                onChangeText={handleChange("firstName")}
+                onBlur={handleBlur("firstName")}
+                value={values.firstName}
+              />
+            </View>
+            <View style={Styles.userNameContainer}>
+              <TextInput
+                style={Styles.userNameInput}
+                placeholder="Last"
+                placeholderTextColor={"white"}
+                onChangeText={handleChange("lastName")}
+                onBlur={handleBlur("lastName")}
+                value={values.lastName}
+              />
+            </View>
+            <View style={Styles.userNameContainer}>
+              <TextInput
+                style={Styles.userNameInput}
+                placeholder="Username"
                 placeholderTextColor={"white"}
                 onChangeText={handleChange("username")}
                 onBlur={handleBlur("username")}
                 value={values.username}
+              />
+            </View>
+            <View style={Styles.userNameContainer}>
+              <TextInput
+                style={Styles.userNameInput}
+                placeholder="Email"
+                placeholderTextColor={"white"}
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+                value={values.email}
               />
             </View>
             <View style={Styles.errorContainer}>
@@ -165,7 +205,7 @@ export default function LoginScreen() {
               </Text>
             </View>
 
-            <Button title="Login" onPress={handleSubmit} />
+            <Button title="Register" onPress={handleSubmit} />
           </>
         )}
       </Formik>
@@ -192,9 +232,9 @@ export default function LoginScreen() {
           marginTop: 20,
         }}
       >
-        <Text style={{ color: "#969696" }}>New around here?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={{ color: "#008bef" }}> Register.</Text>
+        <Text style={{ color: "#969696" }}>Have an account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={{ color: "#008bef" }}> Login In.</Text>
         </TouchableOpacity>
       </View>
     </View>
