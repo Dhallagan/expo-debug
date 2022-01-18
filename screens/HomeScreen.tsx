@@ -21,6 +21,8 @@ import { SCREEN_WIDTH } from "../constants";
 import { colors, fontSize } from "../constants/dogeStyle";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
 import { useTokenStore } from "../store/useTokenStore";
+import { useNavigation } from "@react-navigation/native";
+import { endpoint } from "../constants/httpHelper";
 
 const AuthQuery = `
   query AuthQuery {
@@ -41,12 +43,12 @@ const AuthQuery = `
   }
 `;
 
-function useHomeScreen(token) {
-  return useQuery("homeSreen", async () => {
+function useHomeScreen(args) {
+  return useQuery("homeScreen", async () => {
     return request(
-      "https://test.thatclass.co/api/",
+      endpoint,
       gql`
-        query HomeScreen {
+        query HomeScreen($user: String!) {
           me {
             id
             username
@@ -61,7 +63,7 @@ function useHomeScreen(token) {
             rank
             rankProgress
           }
-          events(user: "dhallagan", first: 5) {
+          events(user: $user, first: 5) {
             edges {
               event: node {
                 id
@@ -77,34 +79,42 @@ function useHomeScreen(token) {
                   name
                   id
                 }
+                name
                 type
               }
             }
           }
-          teams(user: "dhallagan", first: 5) {
+          teams(user: $user, first: 5) {
             edges {
               team: node {
                 id
                 slug
                 name
+                picture {
+                  url
+                }
               }
             }
           }
         }
       `,
-      null,
+      { user: args.user },
       {
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + args.token,
       }
     );
   });
 }
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   let { token } = useTokenStore();
   let { me } = useCurrentUserStore();
-  const { status, data, error, isFetching } = useHomeScreen(token);
+  const { status, data, error, isFetching } = useHomeScreen({
+    user: me.username,
+    token: token,
+  });
 
   if (status === "loading") {
     return (
@@ -116,7 +126,7 @@ export default function HomeScreen() {
   if (status === "error") {
     return (
       <View style={styles.container}>
-        <Text>Oh no... {error.message}</Text>
+        <Text>Unable to load your dashboard {error.message}</Text>
       </View>
     );
   }
@@ -141,46 +151,34 @@ export default function HomeScreen() {
               snapToAlignment={"center"}
               pagingEnabled
             >
-              {
-                data.events?.edges[0] &&
-                  data.events.edges.map((x, idx) => {
-                    let event = x.event;
-                    return (
-                      <UpcomingCard
-                        key={event.id}
-                        id={event.id}
-                        title={
-                          event.class
-                            ? event.type + ": " + event.class.title
-                            : "In Person" + ": @ The Beach"
-                        }
-                        scheduledFor={event.scheduledFor}
-                        eventType={event.type}
-                        image={
-                          event.type !== "Meetup"
-                            ? event.class?.cover?.url
-                            : undefined
-                        }
-                      />
-                    );
-                  })
+              {data.events?.edges[0] &&
+                data.events.edges.map((x, idx) => {
+                  let event = x.event;
 
-                /* <UpcomingCard
-                title="Scheduled Class 2"
-                scheduledFor={"12/6/2021 3pm"}
-                eventType={"In Person"}
-              />
-              <UpcomingCard
-                title="Scheduled Class 3"
-                scheduledFor={"12/6/2021 3pm"}
-                eventType={"In Person"}
-              /> */
-              }
+                  return (
+                    <UpcomingCard
+                      key={event.id}
+                      id={event.id}
+                      title={
+                        event.class
+                          ? event.type + ": " + event.class.title
+                          : "IRL: " + event.name
+                      }
+                      scheduledFor={event.scheduledFor}
+                      eventType={event.type}
+                      image={
+                        event.type !== "Meetup"
+                          ? event.class?.cover?.url
+                          : undefined
+                      }
+                    />
+                  );
+                })}
             </ScrollView>
           }
         />
 
-        {/* <Card>
+        <Card>
           <Section title={"Your Teams"}>
             <View style={styles.teamsContainer}>
               {data.teams?.edges[0] &&
@@ -193,14 +191,20 @@ export default function HomeScreen() {
                       title={x.team.name}
                       team={x.team}
                       image={
+                        x.team.picture?.url ||
                         "https://upgradedpoints.com/wp-content/uploads/2018/08/New-York-City-752x348@2x.jpg"
                       }
+                      onPress={() => {
+                        navigation.navigate("TeamDetail", {
+                          team: x.team.slug,
+                        });
+                      }}
                     />
                   );
                 })}
             </View>
           </Section>
-        </Card> */}
+        </Card>
 
         {/* <Section
           title={"Recent Friend Achievements"}

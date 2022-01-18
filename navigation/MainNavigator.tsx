@@ -6,6 +6,8 @@ import MainScreen from "../screens/MainScreen";
 import { ClassDetailScreen } from "../screens/ClassDetailScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { PostDetailScreen } from "../screens/PostDetailScreen";
+import { TeamDetailScreen } from "../screens/TeamDetailScreen";
+import InviteScreen from "../screens/InviteScreen";
 
 export default function MainNavigator() {
   const Stack = createStackNavigator();
@@ -35,6 +37,16 @@ export default function MainNavigator() {
       <Stack.Screen
         name="PostDetail"
         component={PostDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="TeamDetail"
+        component={TeamDetailScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Invite"
+        component={InviteScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

@@ -33,7 +33,7 @@ function useTeams() {
   });
 }
 
-export default function TeamsScreen() {
+export default function FeedScreen() {
   const inset = useSafeAreaInsets();
 
   const { status, data, error, isFetching } = useTeams();
@@ -48,13 +48,8 @@ export default function TeamsScreen() {
   }
   return (
     <>
-      {/* <View style={styles.container}> */}
       <TitledGradientHeader>Social</TitledGradientHeader>
-      {/* <HypeTitle /> */}
-      {/* <Teams /> */}
       <SocialTabView />
-      {/* <PostList /> */}
-      {/* </View> */}
     </>
   );
 }

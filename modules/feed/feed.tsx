@@ -50,8 +50,12 @@ export function PostList(props: FeedProps) {
   const { status, data, error, isFetching, fetch } = useFeedQuery(client, {
     user: user,
     team: team,
-    after: 1,
+    after: 0,
   });
+
+  console.log("============= FEED =======================");
+  console.log(data);
+  console.log("====================================");
 
   // const { posts } = useFragment(postsFragment, rootRef);
   // const like = useLike();
@@ -67,19 +71,43 @@ export function PostList(props: FeedProps) {
     );
   }
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {data.posts?.edges?.map((edge, idx) => {
-        return (
-          <PostCard key={idx} post={edge.post} scope={team ? "user" : "team"} />
-        );
-      })}
-    </ScrollView>
-  );
+  const activity = data.posts?.edges.length > 0 ? true : false;
+  if (activity) {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        {data.posts?.edges?.map((edge, idx) => {
+          return (
+            <PostCard
+              key={idx}
+              post={edge.post}
+              scope={team ? "user" : "team"}
+            />
+          );
+        })}
+      </ScrollView>
+    );
+  } else {
+    return (
+      <View style={styles.emptyStateContainer}>
+        <Text style={styles.emptyStateTitle}>Your feed is a little empty</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.primary900,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    backgroundColor: colors.primary900,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    color: colors.text,
+    fontWeight: "bold",
   },
 });

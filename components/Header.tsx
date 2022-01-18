@@ -25,11 +25,11 @@ export default function Header() {
             <View style={{ padding: 10 }}>
               <Icon
                 onPress={() => {
-                  alert("Go to Session");
+                  navigation.navigate("Invite");
                 }}
-                name={"radio-outline"}
-                size={30}
-                color={colors.coral}
+                name={"person-add-outline"}
+                size={20}
+                color={"white"}
               />
             </View>
           </View>

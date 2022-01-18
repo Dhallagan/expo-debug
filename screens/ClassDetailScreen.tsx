@@ -52,6 +52,7 @@ interface ClassDetailModalProps {
   onRequestClose: () => void;
   route: any;
 }
+
 export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   onRequestClose,
   route,
@@ -61,7 +62,7 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   const inset = useSafeAreaInsets();
 
   const { status, data, error, isFetching } = useClasses(route.params.classId);
-  console.log("=============v d=======================");
+  console.log("============ CLASS DETAIL ==========");
   console.log(data);
   console.log("====================================");
 
@@ -76,7 +77,9 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   if (status === "error") {
     return (
       <View style={styles.containerLoad}>
-        <Text style={styles.titleText}>Oh no... {error.message}</Text>
+        <Text style={styles.titleText}>
+          Unable to load class {error.message}
+        </Text>
       </View>
     );
   }
@@ -98,7 +101,7 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <TitledHeader showBackButton={true} title={"Details"} />
       <View style={styles.container}>
         <Video

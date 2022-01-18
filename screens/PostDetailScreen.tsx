@@ -37,22 +37,6 @@ export const PostDetailScreen: React.FC<PostDetailProps> = ({
   let autofocus = route.params.autofocus;
   const inset = useSafeAreaInsets();
 
-  // if (status === "loading") {
-  //   return (
-  //     <View style={styles.containerLoad}>
-  //       <Text style={styles.titleText}>Loading...</Text>
-  //     </View>
-  //   );
-  //   return;
-  // }
-  // if (status === "error") {
-  //   return (
-  //     <View style={styles.containerLoad}>
-  //       <Text style={styles.titleText}>Oh no... {error.message}</Text>
-  //     </View>
-  //   );
-  // }
-
   return (
     <>
       <KeyboardAvoidingView behavior={"padding"} style={styles.container}>

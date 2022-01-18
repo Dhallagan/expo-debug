@@ -6,7 +6,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import PostScreen from "../screens/PostScreen";
 import NotificationsScreen from "../screens/SettingsScreen";
 import Icon from "react-native-vector-icons/Ionicons";
-import TeamsScreen from "../screens/TeamsScreen";
+import FeedScreen from "../screens/FeedScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ClassesScreen from "../screens/ClassesScreen";
 import { CreatePostScreen } from "../screens/CreatePostScreen";
@@ -29,7 +29,7 @@ export default function BottomNavigator() {
 
           if (route.name === "Home") {
             iconName = focused ? "ios-home" : "ios-home-outline";
-          } else if (route.name === "Social") {
+          } else if (route.name === "Feed") {
             iconName = focused ? "ios-people" : "ios-people-outline";
           } else if (route.name === "Classes") {
             iconName = focused ? "ios-play" : "ios-play-outline";
@@ -63,7 +63,7 @@ export default function BottomNavigator() {
           tabBarButton: (props) => <CreatePostButton {...props} />,
         }}
       />
-      <Tab.Screen name="Social" component={TeamsScreen} />
+      <Tab.Screen name="Feed" component={FeedScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

@@ -1,11 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { colors, fontSize } from "../constants/dogeStyle";
 
 export function Loading() {
   return (
     <View style={styles.containerLoad}>
-      <Text style={styles.titleText}>Loading...</Text>
+      <Text style={styles.titleText}>
+        <ActivityIndicator size="large" color="#fff" />
+      </Text>
     </View>
   );
 }

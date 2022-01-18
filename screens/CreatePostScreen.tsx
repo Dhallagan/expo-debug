@@ -1,5 +1,7 @@
 import request, { gql } from "graphql-request";
 import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import SelectDropdown from "react-native-select-dropdown";
 import {
   Text,
   KeyboardAvoidingView,
@@ -12,7 +14,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
 import { ErrorMessage, Formik } from "formik";
@@ -20,9 +22,12 @@ import { useTokenStore } from "../store/useTokenStore";
 import { useCreatePostMutation } from "../_generated";
 import QueryClient from "../core/QueryClient";
 import { useNavigation } from "@react-navigation/native";
-import ImagePicker from "../components/ImagePicker";
 import ImagePickerExample from "../components/ImagePicker";
 import * as FileSystem from "expo-file-system";
+import { endpoint } from "../constants/httpHelper";
+import Header from "../components/Header";
+import { TitledHeader } from "../components/TitledHeader";
+import { useCurrentUserStore } from "../store/useCurrentUserStore";
 
 interface CreatePostModalProps {
   onRequestClose: () => void;
@@ -53,22 +58,43 @@ const UPLOAD_URL_MUTATION = gql`
   }
 `;
 
+function useTeamOptions(user) {
+  return useQuery("createPostOptions", async () => {
+    return request(
+      endpoint,
+      gql`
+        query CreatePostOptions($user: String) {
+          teams(user: $user) {
+            edges {
+              team: node {
+                id
+                slug
+                name
+                picture {
+                  url
+                }
+              }
+            }
+          }
+        }
+      `,
+      { user: user }
+    );
+  });
+}
+
 export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
   onRequestClose,
 }) => {
   const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   let { token } = useTokenStore();
+  let { me } = useCurrentUserStore();
 
   const { mutateAsync: getUploadURL } = useMutation((input: Any) => {
-    return request(
-      "https://test.thatclass.co/api/",
-      UPLOAD_URL_MUTATION,
-      input,
-      {
-        Authorization: "Bearer " + token,
-      }
-    )
+    return request(endpoint, UPLOAD_URL_MUTATION, input, {
+      Authorization: "Bearer " + token,
+    })
       .then((res) => {
         return res;
       })
@@ -81,7 +107,7 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
   const { mutate: UpsertPost } = useMutation(
     (args: Any) => {
       var input = {
-        team: "the-late-crew-654",
+        team: args.team,
         content: JSON.stringify([
           {
             type: "paragraph",
@@ -92,7 +118,7 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
       };
 
       return request(
-        "https://test.thatclass.co/api/",
+        endpoint,
         UPSERT_POST,
         {
           input,
@@ -104,7 +130,6 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
     },
     {
       onSuccess: (data) => {
-        // alert("Success" + JSON.stringify(data));
         onRequestClose();
         navigation.navigate("Social");
       },
@@ -115,20 +140,34 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
   );
 
   const post = async (args) => {
-    // //upload photo
-    // let input = {
-    //   fileName: args.media!.split("/").pop(),
-    //   contentType: "PostMediaFile",
-    // };
-
-    // const { uploadURL } = await getUploadURL(input);
-
-    // const uploadResult = await FileSystem.uploadAsync(uploadURL, args.media);
-
-    UpsertPost({ content: args.content, media: imageUrl });
+    UpsertPost({ team: selectedTeam, content: args.content, media: imageUrl });
   };
 
   const [imageInput, image, imageUrl] = ImagePickerExample();
+
+  const { status, data, error, isFetching } = useTeamOptions(me.username);
+
+  if (status === "loading") {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+  if (status === "error") {
+    return (
+      <View style={styles.container}>
+        <Text>Unable to load teams {error.message}</Text>
+      </View>
+    );
+  }
+
+  let teamOptions = [];
+  data.teams.edges.forEach((x) => {
+    teamOptions.push({ label: x.team.name, value: x.team.slug });
+  });
+
+  const [selectedTeam, setSelectedTeam] = useState(teamOptions[0] || null);
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
@@ -139,13 +178,31 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
         ]}
       >
         <View style={styles.topContainer}>
-          <Text style={styles.titleText}>Create Post</Text>
-          <Icon
-            size={28}
-            name="chevron-down"
-            color={"white"}
-            style={{ flex: 1, alignSelf: "center" }}
-          />
+          <Text style={styles.titleText}>Audience</Text>
+          <View style={{ flex: 1, height: 50, padding: 20 }}>
+            <SelectDropdown
+              defaultButtonText={"Select a team"}
+              buttonStyle={styles.buttonStyle}
+              buttonTextStyle={styles.buttonTextStyle}
+              dropdownStyle={styles.dropdownStyle}
+              rowTextStyle={styles.rowTextStyle}
+              data={teamOptions}
+              onSelect={(selectedItem, index) => {
+                setSelectedTeam(selectedItem.value);
+                // alert(JSON.stringify(selectedItem.value));
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                // text represented after item is selected
+                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                return selectedItem.label;
+              }}
+              rowTextForSelection={(item, index) => {
+                // text represented for each item in dropdown
+                // if data array is an array of objects then return item.property to represent item in dropdown
+                return item.label;
+              }}
+            />
+          </View>
         </View>
 
         <ScrollView keyboardShouldPersistTaps="handled">
@@ -167,12 +224,6 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
               setFieldValue,
             }) => (
               <>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => onRequestClose()}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
                 <View style={{ display: "flex", width: "100%" }}>
                   <TextInput
                     style={[styles.roomNameEditText]}
@@ -205,6 +256,12 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
                 >
                   <Text style={styles.titleText}>Post</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => onRequestClose()}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
               </>
             )}
           </Formik>
@@ -221,7 +278,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary800,
   },
   topContainer: {
-    flex: 0,
+    flex: 1,
+    maxHeight: 70,
     flexDirection: "row",
   },
   postButton: {
@@ -261,5 +319,29 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     alignSelf: "flex-end",
     textDecorationLine: "underline",
+  },
+  buttonStyle: {
+    // flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: colors.primary500,
+    borderWidth: 2,
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: colors.primary600,
+  },
+  buttonTextStyle: {
+    color: colors.text,
+    fontWeight: "bold",
+  },
+  dropdownStyle: {
+    backgroundColor: colors.primary600,
+    borderColor: colors.primary500,
+    borderWidth: 2,
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  rowTextStyle: {
+    color: colors.text,
   },
 });

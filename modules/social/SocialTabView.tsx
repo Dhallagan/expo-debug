@@ -1,6 +1,7 @@
 import * as React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import JsonText from "../../components/JsonText";
 import { colors } from "../../constants/dogeStyle";
 import { useCurrentUserStore } from "../../store/useCurrentUserStore";
 import { PostList } from "../feed/Feed";
@@ -10,7 +11,8 @@ function FirstRoute() {
 
   return (
     <View style={[styles.scene, { backgroundColor: "#ff4081" }]}>
-      <PostList user={me.user.username} />
+      {/* <JsonText obj={me} /> */}
+      <PostList user={me.username} />
     </View>
   );
 }

@@ -76,7 +76,7 @@ export default function RegisterScreen() {
     })
       .then((res) => {
         if (res.createUser?.user) {
-          setMe(res.createUser?.user);
+          setMe(res.createUser.user);
           login(res.createUser?.accessToken);
         }
       })
@@ -84,10 +84,10 @@ export default function RegisterScreen() {
         console.log(errors);
         const err = errors.response.errors?.[0];
         alert(JSON.stringify(errors));
-        // setState((prev) => ({
-        //   ...prev,
-        //   errors: err?.errors ?? (err ? { _: [err.message] } : {}),
-        // }));
+        setState((prev) => ({
+          ...prev,
+          errors: err?.errors ?? (err ? { _: [err.message] } : {}),
+        }));
       });
   });
 
@@ -173,6 +173,11 @@ export default function RegisterScreen() {
                 value={values.username}
               />
             </View>
+            <View style={Styles.errorContainer}>
+              <Text style={{ color: "red" }}>
+                {!!state.errors.username && state.errors.username[0]}
+              </Text>
+            </View>
             <View style={Styles.userNameContainer}>
               <TextInput
                 style={Styles.userNameInput}
@@ -185,7 +190,7 @@ export default function RegisterScreen() {
             </View>
             <View style={Styles.errorContainer}>
               <Text style={{ color: "red" }}>
-                {!!state.errors.username && state.errors.username[0]}
+                {!!state.errors.email && state.errors.email[0]}
               </Text>
             </View>
             <View style={Styles.passwordContainer}>

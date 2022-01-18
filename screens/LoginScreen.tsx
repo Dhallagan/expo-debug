@@ -70,7 +70,7 @@ export default function LoginScreen() {
     })
       .then((res) => {
         if (res.signIn?.user) {
-          setMe(res.signIn);
+          setMe(res.signIn?.user);
           login(res.signIn?.accessToken);
         }
       })

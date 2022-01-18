@@ -184,7 +184,9 @@ export const ClassOptionsButton: React.FC<CreatePostModalProps> = ({
   if (status === "error") {
     return (
       <View style={styles.containerLoad}>
-        <Text style={styles.titleText}>Oh no... {error.message}</Text>
+        <Text style={styles.titleText}>
+          Unable to load options {error.message}
+        </Text>
       </View>
     );
   }
