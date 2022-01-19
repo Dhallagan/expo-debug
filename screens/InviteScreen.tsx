@@ -5,6 +5,7 @@ import {
   Text,
   SafeAreaView,
   ScrollView,
+  Linking,
   TouchableOpacity,
 } from "react-native";
 import * as Contacts from "expo-contacts";
@@ -12,6 +13,8 @@ import { colors } from "../constants/dogeStyle";
 import { TitledHeader } from "../components/TitledHeader";
 import JsonText from "../components/JsonText";
 import { Chip } from "../components/Chip";
+import { Loading } from "../components/Loading";
+import { Button } from "../components/Button";
 
 export default function App() {
   const [contacts, setContacts] = React.useState([]);
@@ -31,9 +34,9 @@ export default function App() {
   }, []);
 
   if (contacts.length <= 0) {
-    return <JsonText obj={"Loading"}> Loading</JsonText>;
+    return <Loading />;
   }
-  console.log(contacts);
+
   return (
     <SafeAreaView style={styles.container}>
       <TitledHeader title={"Invite Friends"} showBackButton={true} />
@@ -42,34 +45,44 @@ export default function App() {
         {/* <JsonText obj={contacts} /> */}
         {contacts.length > 0 &&
           contacts.slice(0, 50).map((contact, idx) => {
-            // return <Text style={{ color: "white" }}>{x.firstName}</Text>;
             return (
               <>
-                {/* <JsonText obj={JSON.stringify(contact)} /> */}
                 <View style={styles.contactRow}>
                   <Text style={{ color: "white", flex: 1 }}>
                     {contact.lastName}, {contact.firstName}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      alert(
-                        "send invite text to " +
-                          contact.firstName +
-                          " " +
-                          contact.lastName
-                      );
+                  <Text
+                    style={{
+                      color: "white",
+                      flex: 1,
+                      justifyContent: "flex-end",
                     }}
                   >
-                    <Text style={{ color: "white" }}>Invite</Text>
-                  </TouchableOpacity>
+                    {contact.phoneNumbers
+                      ? contact.phoneNumbers[0].digits
+                      : " "}
+                  </Text>
+
+                  <Button
+                    title={"+ Invite"}
+                    onPress={() => {
+                      let msg = `Hi ${contact.firstName}! I'm inviting you to join me on ThatClass so we workout together virtual and keep each other accountable. Here is the link:`;
+                      WriteSMS(contact.phoneNumbers[0].digits, msg);
+                    }}
+                  >
+                    + Invite
+                  </Button>
                 </View>
               </>
             );
           })}
-        {/* <View style={styles.contactContainer}></View> */}
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+function WriteSMS(phone: string, msg: string) {
+  Linking.openURL(`sms:&addresses=${phone}&body=${msg}`);
 }
 
 const styles = StyleSheet.create({
@@ -87,12 +100,10 @@ const styles = StyleSheet.create({
   contactRow: {
     display: "flex",
     flexDirection: "row",
-    backgroundColor: colors.primary900,
     alignItems: "center",
-    padding: 20,
-    margin: 10,
-    borderWidth: 1,
-    borderColor: "#AAA",
-    borderRadius: 7,
+    padding: 10,
+    margin: 5,
+    borderBottomWidth: 1,
+    borderColor: colors.primary600,
   },
 });

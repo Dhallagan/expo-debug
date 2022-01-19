@@ -1,17 +1,24 @@
+import { useNavigation } from "@react-navigation/native";
 import request, { gql } from "graphql-request";
 import React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useQuery } from "react-query";
+import { Loading } from "../components/Loading";
 // import { useQuery } from "urql";
 import { TeamCard } from "../components/TeamCard";
+import { TitledHeader } from "../components/TitledHeader";
 import TitledGradientHeader from "../components/TitleGradientHeader";
 import { colors } from "../constants/dogeStyle";
+import { endpoint } from "../constants/httpHelper";
 
 function useTeams() {
   return useQuery("teams", async () => {
     return await request(
-      "https://test.thatclass.co/api/",
+      endpoint,
       gql`
         query {
           teams {
@@ -21,7 +28,9 @@ function useTeams() {
                 slug
                 name
                 description
-                membership
+                picture {
+                  url
+                }
               }
             }
           }
@@ -33,17 +42,18 @@ function useTeams() {
 
 export default function TeamsScreen() {
   const inset = useSafeAreaInsets();
+  const navigation = useNavigation();
   const { status, data, error, isFetching } = useTeams();
 
   if (isFetching) {
-    return <Text>Loading...</Text>;
+    return <Loading />;
   }
   if (error) {
-    return <Text>Oh no... {error.message}</Text>;
+    return <Text>Unable to load teams {error.message}</Text>;
   }
   return (
-    <>
-      <TitledGradientHeader>Teams</TitledGradientHeader>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary700 }}>
+      <TitledHeader title={"Teams"} showBackButton={true} />
       {/* <HypeTitle /> */}
       {/* <Teams /> */}
 
@@ -58,16 +68,19 @@ export default function TeamsScreen() {
                 title={x.team.name}
                 team={x.team}
                 image={
+                  x.team.picture?.url ||
                   "https://upgradedpoints.com/wp-content/uploads/2018/08/New-York-City-752x348@2x.jpg"
                 }
                 onPress={() => {
-                  alert("Go to Team");
+                  navigation.navigate("TeamDetail", {
+                    team: x.team.slug,
+                  });
                 }}
               />
             );
           })}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 
@@ -92,3 +105,6 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
+function uesNavigation() {
+  throw new Error("Function not implemented.");
+}

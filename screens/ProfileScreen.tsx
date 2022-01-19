@@ -6,6 +6,7 @@ import {
   View,
   ImageBackground,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "../components/Button";
@@ -20,15 +21,38 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { Section } from "../components/Section";
 import { HomeAchievementCard } from "../components/HomeAcheivementCard";
+import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ProfileScreen() {
   const inset = useSafeAreaInsets();
   let { logout } = useTokenStore();
+  const navigation = useNavigation();
 
   return (
     <>
       <View style={styles.container}>
         <ScrollView>
+          <View style={styles.topContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                logout();
+                navigation.navigate("Home");
+              }}
+            >
+              <Icon
+                name="ios-log-out"
+                size={24}
+                color={"white"}
+                style={{
+                  paddingTop: 40,
+                  paddingRight: 20,
+                  alignSelf: "flex-end",
+                  paddingLeft: 5,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
           <ImageBackground
             source={{
               uri: "https://www.byrdie.com/thmb/CUqBZx5iAwgfAhFJe2KJbESgMTg=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/soulcycle-1119591f4791461a84390597318dd99e.jpg",
@@ -171,5 +195,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 24,
     color: colors.text,
+  },
+  topContainer: {
+    flex: 1,
+    zIndex: 20,
   },
 });

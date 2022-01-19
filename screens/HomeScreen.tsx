@@ -23,6 +23,7 @@ import { useCurrentUserStore } from "../store/useCurrentUserStore";
 import { useTokenStore } from "../store/useTokenStore";
 import { useNavigation } from "@react-navigation/native";
 import { endpoint } from "../constants/httpHelper";
+// import Button from "../components/Button";
 
 const AuthQuery = `
   query AuthQuery {
@@ -134,7 +135,7 @@ export default function HomeScreen() {
     <>
       <Header />
       <ScrollView style={{ backgroundColor: colors.primary900 }}>
-        <GreetingText>Hi, Dylan!</GreetingText>
+        <GreetingText>Hi, {me.firstName}!</GreetingText>
 
         <Section
           style={{ marginBottom: 40 }}
@@ -181,7 +182,7 @@ export default function HomeScreen() {
         <Card>
           <Section title={"Your Teams"}>
             <View style={styles.teamsContainer}>
-              {data.teams?.edges[0] &&
+              {data.teams?.edges > 0 ? (
                 data.teams.edges.map((x) => {
                   let event = x.team;
                   return (
@@ -201,7 +202,20 @@ export default function HomeScreen() {
                       }}
                     />
                   );
-                })}
+                })
+              ) : (
+                <View style={{ flex: 1 }}>
+                  <Text style={{ paddingLeft: 10, color: "white" }}>
+                    You haven't joined any teams, yet.
+                  </Text>
+                  <Button
+                    title="Create or Join a Team"
+                    onPress={() => {
+                      navigation.navigate("Teams");
+                    }}
+                  />
+                </View>
+              )}
             </View>
           </Section>
         </Card>
@@ -247,7 +261,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingHorizontal: 5,
     backgroundColor: colors.primary900,
   },
   teamsContainer: {
@@ -267,7 +280,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 5,
     paddingVertical: 5,
-
     alignSelf: "stretch",
   },
 });

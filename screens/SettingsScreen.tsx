@@ -1,14 +1,14 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text } from "react-native";
 import { colors, h4 } from "../constants/dogeStyle";
 import { TitledHeader } from "../components/TitledHeader";
 
 export default function SettingsScreen() {
   return (
-    <>
-      <TitledHeader title={"Settings"} showBackButton={true} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary700 }}>
+      <TitledHeader title={"Notifications"} showBackButton={true} />
       <ScrollView style={styles.scrollView}></ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 

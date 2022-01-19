@@ -9,6 +9,7 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 import { colors } from "../constants/dogeStyle";
 
@@ -83,7 +84,6 @@ export default function RegisterScreen() {
       .catch((errors) => {
         console.log(errors);
         const err = errors.response.errors?.[0];
-        alert(JSON.stringify(errors));
         setState((prev) => ({
           ...prev,
           errors: err?.errors ?? (err ? { _: [err.message] } : {}),
@@ -92,7 +92,7 @@ export default function RegisterScreen() {
   });
 
   return (
-    <View style={Styles.container}>
+    <KeyboardAvoidingView behavior={"padding"} style={Styles.container}>
       <View style={Styles.logoContainer}>
         <Text style={Styles.loginHeader}>Register</Text>
         {/* <Image source={images.logo}  />s */}
@@ -133,11 +133,11 @@ export default function RegisterScreen() {
 
       <Formik
         initialValues={{
-          username: "dhallagantest",
-          email: "dhallagantest@msn.com",
-          password: "password",
-          firstName: "DylanTest",
-          lastName: "HallaganTest",
+          username: "",
+          email: "",
+          password: "",
+          firstName: "",
+          lastName: "",
         }}
         onSubmit={(values) => mutation.mutate(values)}
       >
@@ -202,6 +202,7 @@ export default function RegisterScreen() {
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 value={values.password}
+                returnKeyType="go"
               />
             </View>
             <View style={Styles.errorContainer}>
@@ -242,7 +243,7 @@ export default function RegisterScreen() {
           <Text style={{ color: "#008bef" }}> Login In.</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

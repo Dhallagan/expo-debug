@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({ style, title, onPress }) => {
     <TouchableOpacity onPress={onPress}>
       <LinearGradient
         colors={["#C03DAE", "#00BFF7"]}
-        style={Styles.loginContainer}
+        style={Styles.container}
         start={{ x: 0.0, y: 0.1 }}
         end={{ x: 1, y: 0.0 }}
       >
@@ -42,15 +42,17 @@ export const Button: React.FC<ButtonProps> = ({ style, title, onPress }) => {
 };
 
 const Styles = StyleSheet.create({
-  loginContainer: {
+  container: {
     alignItems: "center",
-    height: 40,
-    marginTop: 30,
+    // minHeight: 20,
+    // marginTop: 30,
     backgroundColor: "#0088f8",
     justifyContent: "center",
     marginStart: 20,
     marginEnd: 20,
-    borderRadius: 5,
+    borderRadius: 15,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
   },
   loginText: {
     color: "#fff",

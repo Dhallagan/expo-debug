@@ -6,10 +6,11 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import { NewRoomNotification } from "../components/notifications/NewRoomNotification";
 import { colors, h4 } from "../constants/dogeStyle";
 import { TitledHeader } from "../components/TitledHeader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function NotificationsScreen() {
   return (
-    <>
+    <SafeAreaView>
       <TitledHeader title={"Notifications"} showBackButton={true} />
       <ScrollView style={styles.scrollView}>
         <Text style={{ ...h4, marginTop: 10, marginBottom: 20 }}>Today</Text>
@@ -58,7 +59,7 @@ export default function NotificationsScreen() {
           style={{ marginBottom: 27 }}
         /> */}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 

@@ -9,6 +9,7 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 import { colors } from "../constants/dogeStyle";
 
@@ -23,6 +24,7 @@ import { useMutation } from "react-query";
 import request, { gql } from "graphql-request";
 import JsonText from "../components/JsonText";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
+import { endpoint } from "../constants/httpHelper";
 
 const SIGN_IN = gql`
   mutation LoginMutation($input: SignInInput!) {
@@ -65,7 +67,7 @@ export default function LoginScreen() {
   const [state, setState] = React.useState(initialState);
 
   const mutation = useMutation((input: SignInInput) => {
-    return request("https://test.thatclass.co/api/", SIGN_IN, {
+    return request(endpoint, SIGN_IN, {
       input,
     })
       .then((res) => {
@@ -76,7 +78,6 @@ export default function LoginScreen() {
       })
       .catch((errors) => {
         const err = errors.response.errors?.[0];
-        alert(JSON.stringify(errors));
         setState((prev) => ({
           ...prev,
           errors: err?.errors ?? (err ? { _: [err.message] } : {}),
@@ -85,7 +86,7 @@ export default function LoginScreen() {
   });
 
   return (
-    <View style={Styles.container}>
+    <KeyboardAvoidingView behavior={"padding"} style={Styles.container}>
       <View style={Styles.logoContainer}>
         <Text style={Styles.loginHeader}>Log In</Text>
         {/* <Image source={images.logo}  />s */}
@@ -126,8 +127,8 @@ export default function LoginScreen() {
 
       <Formik
         initialValues={{
-          username: "dhallagan",
-          password: "password",
+          username: "",
+          password: "",
         }}
         onSubmit={(values) => mutation.mutate(values)}
       >
@@ -157,6 +158,7 @@ export default function LoginScreen() {
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 value={values.password}
+                returnKeyType="go"
               />
             </View>
             <View style={Styles.errorContainer}>
@@ -197,7 +199,7 @@ export default function LoginScreen() {
           <Text style={{ color: "#008bef" }}> Register.</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
