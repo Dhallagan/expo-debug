@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   Linking,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import * as Contacts from "expo-contacts";
 import { colors } from "../constants/dogeStyle";
@@ -15,9 +16,12 @@ import JsonText from "../components/JsonText";
 import { Chip } from "../components/Chip";
 import { Loading } from "../components/Loading";
 import { Button } from "../components/Button";
+import { SearchInput } from "../components/SearchInput";
 
 export default function App() {
   const [contacts, setContacts] = React.useState([]);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     (async () => {
       const { status } = await Contacts.requestPermissionsAsync();
@@ -37,17 +41,29 @@ export default function App() {
     return <Loading />;
   }
 
+  let filteredContacts = [];
+  if (contacts) {
+    filteredContacts = contacts.filter((x) => {
+      // alert(JSON.stringify(searchVal));
+      return JSON.stringify(x)
+        .toLowerCase()
+        .includes(search.toString().toLowerCase() || "");
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <TitledHeader title={"Invite Friends"} showBackButton={true} />
+      <SearchInput value={search} onChange={setSearch} placeholder={"Search"} />
 
       <ScrollView style={{ flex: 1, backgroundColor: colors.primary700 }}>
         {/* <JsonText obj={contacts} /> */}
         {contacts.length > 0 &&
-          contacts.slice(0, 50).map((contact, idx) => {
+          filteredContacts.slice(0, 20).map((contact, idx) => {
             return (
               <>
                 <View style={styles.contactRow}>
+                  <JsonText obj={contact} />
                   <Text style={{ color: "white", flex: 1 }}>
                     {contact.lastName}, {contact.firstName}
                   </Text>
@@ -105,5 +121,19 @@ const styles = StyleSheet.create({
     margin: 5,
     borderBottomWidth: 1,
     borderColor: colors.primary600,
+  },
+  searchInput: {
+    borderColor: colors.primary600,
+    // backgroundColor: colors.loginInputBackground,
+    borderWidth: 2,
+    borderRadius: 20,
+    height: 40,
+    justifyContent: "center",
+    //alignItems: 'center',
+    marginHorizontal: 5,
+    // marginEnd: 20,
+    // marginTop: 20,
+    padding: 10,
+    // marginBottom: 20,
   },
 });

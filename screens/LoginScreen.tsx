@@ -12,13 +12,13 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { colors } from "../constants/dogeStyle";
-
+// import { } from "../store/useTokenStore";
 import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
 import { images } from "../assets/";
 import { ErrorMessage, Formik } from "formik";
 import { Button } from "../components/Button";
-import { useTokenStore } from "../store/useTokenStore";
+import { useLoginStore, useTokenStore } from "../store/useTokenStore";
 import { useSignIn } from "../queries";
 import { useMutation } from "react-query";
 import request, { gql } from "graphql-request";
@@ -61,7 +61,8 @@ const initialState = {
 };
 
 export default function LoginScreen() {
-  let { login, logout } = useTokenStore();
+  let { login } = useTokenStore();
+
   let { setMe } = useCurrentUserStore();
   const navigation = useNavigation();
   const [state, setState] = React.useState(initialState);
@@ -72,8 +73,13 @@ export default function LoginScreen() {
     })
       .then((res) => {
         if (res.signIn?.user) {
+          alert(res.signIn);
           setMe(res.signIn?.user);
-          login(res.signIn?.accessToken);
+          try {
+            login(res.signIn?.accessToken);
+          } catch (err) {
+            alert(err);
+          }
         }
       })
       .catch((errors) => {
@@ -226,7 +232,7 @@ const Styles = StyleSheet.create({
     alignItems: "center",
     borderColor: "#343536",
     borderWidth: 2,
-    borderRadius: 5,
+    borderRadius: 2,
     padding: 5,
     paddingVertical: 10,
     width: "47.5%",
@@ -246,6 +252,7 @@ const Styles = StyleSheet.create({
     // marginBottom: 20,
   },
   userNameInput: {
+    fontSize: 20,
     marginStart: 10,
     color: "white",
   },
@@ -267,7 +274,7 @@ const Styles = StyleSheet.create({
     marginEnd: 20,
     marginBottom: 20,
   },
-  passwordInput: { marginStart: 10, color: "white" },
+  passwordInput: { fontSize: 20, marginStart: 10, color: "white" },
   forgotPasswordContainer: {
     alignItems: "flex-end",
     marginEnd: 20,

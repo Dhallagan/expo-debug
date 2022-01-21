@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import request, { gql } from "graphql-request";
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   SafeAreaView,
@@ -14,7 +14,8 @@ import { TitledHeader } from "../components/TitledHeader";
 import TitledGradientHeader from "../components/TitleGradientHeader";
 import { colors } from "../constants/dogeStyle";
 import { endpoint } from "../constants/httpHelper";
-
+import { SearchInput } from "../components/SearchInput";
+import JsonText from "../components/JsonText";
 function useTeams() {
   return useQuery("teams", async () => {
     return await request(
@@ -44,6 +45,7 @@ export default function TeamsScreen() {
   const inset = useSafeAreaInsets();
   const navigation = useNavigation();
   const { status, data, error, isFetching } = useTeams();
+  const [search, setSearch] = useState("");
 
   if (isFetching) {
     return <Loading />;
@@ -51,16 +53,32 @@ export default function TeamsScreen() {
   if (error) {
     return <Text>Unable to load teams {error.message}</Text>;
   }
+
+  let filteredTeams = [];
+  if (data) {
+    filteredTeams = data.teams.edges.filter((x) => {
+      // alert(JSON.stringify(searchVal));
+      return JSON.stringify(x)
+        .toLowerCase()
+        .includes(search.toString().toLowerCase() || "");
+    });
+  }
+
+  const handleChange = (e: { target: { value: string } }) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary700 }}>
       <TitledHeader title={"Teams"} showBackButton={true} />
       {/* <HypeTitle /> */}
       {/* <Teams /> */}
-
+      <SearchInput value={search} onChange={setSearch} placeholder={"Search"} />
+      {/* <JsonText obj={filteredTeams} /> */}
       <ScrollView contentContainerStyle={styles.container}>
         {/* <JsonText obj={data} /> */}
         {data &&
-          data.teams.edges.map((x: any, idx: number) => {
+          filteredTeams.map((x: any, idx: number) => {
             return (
               <TeamCard
                 key={x.id}
@@ -89,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+    // justifyContent: "center",
     paddingTop: 10,
     paddingHorizontal: 5,
     backgroundColor: colors.primary700,

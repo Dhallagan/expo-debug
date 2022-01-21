@@ -5,16 +5,20 @@ import { colors } from "../constants/dogeStyle";
 import { HeaderBase } from "./HeaderBase";
 
 type TitledHeaderProps = {
+  xs: Object | null;
   showBackButton: boolean;
+  absolute: boolean;
   title: string;
 };
 
 export const TitledHeader: React.FC<TitledHeaderProps> = ({
+  xs = null,
   showBackButton = true,
+  absolute = false,
   title,
 }) => {
   return (
-    <HeaderBase showBackButton={showBackButton}>
+    <HeaderBase showBackButton={showBackButton} absolute={absolute} xs={xs}>
       <Text style={styles.text}>{title}</Text>
     </HeaderBase>
   );

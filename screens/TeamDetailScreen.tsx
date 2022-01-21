@@ -1,6 +1,7 @@
 import request, { gql } from "graphql-request";
 import React from "react";
 import {
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -25,7 +26,7 @@ import { Section } from "../components/Section";
 import { TeamCard } from "../components/TeamCard";
 import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
-import { SCREEN_WIDTH } from "../constants";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { colors, fontSize } from "../constants/dogeStyle";
 import { endpoint } from "../constants/httpHelper";
 import { PostList } from "../modules/feed/Feed";
@@ -99,16 +100,61 @@ export const TeamDetailScreen: React.FC<TeamDetailProps> = ({ route }) => {
       </SafeAreaView>
     );
   }
-  return (
-    <SafeAreaView style={{ backgroundColor: colors.primary900, flex: 1 }}>
-      <TitledHeader title={data.team.name} showBackButton={true} />
-      <ScrollView style={{ backgroundColor: colors.primary900 }}>
-        {/* <JsonText obj={data} /> */}
 
-        {/* <JsonText obj={me} /> */}
-        <PostList team={data.team.slug} />
-      </ScrollView>
-    </SafeAreaView>
+  const teamImageSrc = { uri: data.team.picture.url || undefined };
+  return (
+    <View
+      style={{
+        backgroundColor: colors.primary900,
+        flex: 1,
+        position: "relative",
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: colors.primary900,
+          flex: 1,
+          position: "relative",
+          // paddingTop: 25,
+        }}
+      >
+        <TitledHeader
+          title={""}
+          showBackButton={true}
+          absolute={true}
+          xs={{ paddingTop: 47 }}
+        />
+
+        <ScrollView style={{ backgroundColor: colors.primary900 }}>
+          <View style={styles.topContainer}>
+            <Image
+              source={teamImageSrc}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <View style={{ flex: 1, flexDirection: "row" }}></View>
+            <View
+              style={{
+                flexDirection: "row",
+
+                padding: 5,
+              }}
+            >
+              <Text style={styles.title}>{data.team.name}</Text>
+              <Text style={styles.joinButton}>
+                <Button
+                  title="Join"
+                  onPress={() => {
+                    alert("Join mutation");
+                  }}
+                ></Button>
+              </Text>
+            </View>
+          </View>
+          <PostList team={data.team.slug} />
+        </ScrollView>
+      </View>
+    </View>
   );
 };
 
@@ -137,5 +183,31 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
 
     alignSelf: "stretch",
+  },
+  joinButton: {
+    flex: 0,
+  },
+  topContainer: {
+    position: "relative",
+    height: (SCREEN_HEIGHT - 100) / 3.5,
+    width: "100%",
+    marginBottom: 5,
+    display: "flex",
+  },
+  title: {
+    flex: 1,
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20,
+    padding: 5,
+    // alignSelf: "center",
+  },
+  image: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    borderColor: "transparent",
+    alignSelf: "center",
+    opacity: 0.8,
   },
 });

@@ -14,17 +14,27 @@ import { colors } from "../constants/dogeStyle";
 // import { colors } from "../../constants/dogeStyle";
 
 export type HeaderBaseProps = ViewProps & {
+  xs: Object | null;
+  absolute: boolean;
   showBackButton?: boolean;
 };
 
 export const HeaderBase: React.FC<HeaderBaseProps> = ({
+  xs = null,
   showBackButton = true,
+  absolute = false,
   children,
 }) => {
   const navigation = useNavigation();
-  const inset = useSafeAreaInsets();
+
   return (
-    <View style={[styles.container]}>
+    <View
+      style={[
+        styles.container,
+        absolute ? styles.absolute : null,
+        xs ? xs : null,
+      ]}
+    >
       {showBackButton && (
         <TouchableOpacity
           style={styles.leftContainer}
@@ -53,5 +63,12 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     height: 60,
     justifyContent: "center",
+  },
+  absolute: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 20,
+    backgroundColor: "transparent",
   },
 });

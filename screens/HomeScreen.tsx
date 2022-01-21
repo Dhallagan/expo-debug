@@ -205,9 +205,9 @@ export default function HomeScreen() {
                 })
               ) : (
                 <View style={{ flex: 1 }}>
-                  <Text style={{ paddingLeft: 10, color: "white" }}>
+                  {/* <Text style={{ paddingLeft: 10, color: "white" }}>
                     You haven't joined any teams, yet.
-                  </Text>
+                  </Text> */}
                   <Button
                     title="Create or Join a Team"
                     onPress={() => {

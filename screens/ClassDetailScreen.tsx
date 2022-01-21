@@ -19,6 +19,8 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import { useQuery } from "react-query";
 import request, { gql } from "graphql-request";
 import { endpoint } from "../constants/httpHelper";
+import { useForceUpdate } from "../core/useForceUpdate";
+import { Loading } from "../components/Loading";
 
 function useClasses(cId) {
   return useQuery(
@@ -58,9 +60,8 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   route,
 }) => {
   const video = React.useRef(null);
-  const [status1, setStatus] = React.useState({});
-  const inset = useSafeAreaInsets();
-
+  const forceUpdate = useForceUpdate();
+  forceUpdate();
   const { status, data, error, isFetching } = useClasses(route.params.classId);
   console.log("============ CLASS DETAIL ==========");
   console.log(data);
@@ -69,7 +70,7 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   if (status === "loading") {
     return (
       <View style={styles.containerLoad}>
-        <Text style={styles.titleText}>Loading...</Text>
+        <Loading />
       </View>
     );
     return;

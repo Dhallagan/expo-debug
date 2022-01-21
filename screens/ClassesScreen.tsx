@@ -12,6 +12,7 @@ import JsonText from "../components/JsonText";
 import { useQuery } from "react-query";
 import request, { gql } from "graphql-request";
 import { endpoint } from "../constants/httpHelper";
+import { Loading } from "../components/Loading";
 
 function useClasses() {
   return useQuery("classes", async () => {
@@ -119,7 +120,7 @@ export default function ClassesScreen(props) {
   if (status === "loading") {
     return (
       <View style={styles.containerLoad}>
-        <Text style={styles.titleText}>Loading...</Text>
+        <Loading />
       </View>
     );
   }

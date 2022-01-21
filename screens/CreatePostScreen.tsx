@@ -22,12 +22,14 @@ import { useTokenStore } from "../store/useTokenStore";
 import { useCreatePostMutation } from "../_generated";
 import QueryClient from "../core/QueryClient";
 import { useNavigation } from "@react-navigation/native";
+import ImagePicker from "../components/ImagePicker";
 import ImagePickerExample from "../components/ImagePicker";
 import * as FileSystem from "expo-file-system";
 import { endpoint } from "../constants/httpHelper";
 import Header from "../components/Header";
 import { TitledHeader } from "../components/TitledHeader";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
+import { Loading } from "../components/Loading";
 
 interface CreatePostModalProps {
   onRequestClose: () => void;
@@ -90,6 +92,7 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
   const inset = useSafeAreaInsets();
   let { token } = useTokenStore();
   let { me } = useCurrentUserStore();
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const { mutateAsync: getUploadURL } = useMutation((input: Any) => {
     return request(endpoint, UPLOAD_URL_MUTATION, input, {
@@ -106,6 +109,7 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
 
   const { mutate: UpsertPost } = useMutation(
     (args: Any) => {
+      alert(args.team);
       var input = {
         team: args.team,
         content: JSON.stringify([
@@ -150,10 +154,11 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
   if (status === "loading") {
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <Loading />
       </View>
     );
   }
+
   if (status === "error") {
     return (
       <View style={styles.container}>
@@ -167,8 +172,6 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
     teamOptions.push({ label: x.team.name, value: x.team.slug });
   });
 
-  const [selectedTeam, setSelectedTeam] = useState(teamOptions[0] || null);
-
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
       <View
@@ -179,40 +182,38 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
       >
         <View style={styles.topContainer}>
           <Text style={styles.titleText}>Audience</Text>
-          <View style={{ flex: 1, height: 50, padding: 20 }}>
-            <SelectDropdown
-              defaultButtonText={"Select a team"}
-              buttonStyle={styles.buttonStyle}
-              buttonTextStyle={styles.buttonTextStyle}
-              dropdownStyle={styles.dropdownStyle}
-              rowTextStyle={styles.rowTextStyle}
-              data={teamOptions}
-              onSelect={(selectedItem, index) => {
-                setSelectedTeam(selectedItem.value);
-                // alert(JSON.stringify(selectedItem.value));
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-                return selectedItem.label;
-              }}
-              rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item.label;
-              }}
-            />
-          </View>
+          <SelectDropdown
+            defaultButtonText={"Select a team"}
+            buttonStyle={styles.buttonStyle}
+            buttonTextStyle={styles.buttonTextStyle}
+            dropdownStyle={styles.dropdownStyle}
+            rowTextStyle={styles.rowTextStyle}
+            data={teamOptions}
+            onSelect={(selectedItem, index) => {
+              setSelectedTeam(selectedItem.value);
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem.label;
+            }}
+            rowTextForSelection={(item, index) => {
+              // text represented for each item in dropdown
+              // if data array is an array of objects then return item.property to represent item in dropdown
+              return item.label;
+            }}
+          />
         </View>
-
         <ScrollView keyboardShouldPersistTaps="handled">
           <Formik
             initialValues={{
+              team: null,
               content: "",
               media: "",
             }}
             onSubmit={(values) => {
               values.media = imageUrl ? imageUrl : "";
+              values.team = selectedTeam;
               post(values);
             }}
           >
@@ -233,10 +234,10 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
                     onBlur={handleBlur("content")}
                     value={values.content}
                   />
-
                   {imageInput}
-                  <Text>{image}</Text>
-                  <Text>{imageUrl}</Text>
+                  {image && !imageUrl && (
+                    <Text style={{ color: "white" }}>Uploading...</Text>
+                  )}
                 </View>
                 <View>
                   <Text>
@@ -278,9 +279,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary800,
   },
   topContainer: {
-    flex: 1,
-    maxHeight: 70,
+    flex: 0,
+    maxHeight: 40,
     flexDirection: "row",
+    alignItems: "center",
   },
   postButton: {
     flex: 0,
@@ -321,14 +323,11 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   buttonStyle: {
-    // flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: colors.primary500,
-    borderWidth: 2,
-    marginBottom: 10,
+    padding: 5,
+    margin: 5,
     borderRadius: 10,
-    backgroundColor: colors.primary600,
+    borderWidth: 2,
+    backgroundColor: colors.primary800,
   },
   buttonTextStyle: {
     color: colors.text,
