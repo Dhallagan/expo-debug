@@ -36,7 +36,7 @@ export default function ProfileScreen() {
           <View style={styles.topContainer}>
             <TouchableOpacity
               onPress={() => {
-                logout;
+                logout();
                 navigation.navigate("Home");
               }}
             >
