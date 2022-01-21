@@ -63,7 +63,6 @@ export default function App() {
             return (
               <>
                 <View style={styles.contactRow}>
-                  <JsonText obj={contact} />
                   <Text style={{ color: "white", flex: 1 }}>
                     {contact.lastName}, {contact.firstName}
                   </Text>
