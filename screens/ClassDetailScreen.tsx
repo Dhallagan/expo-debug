@@ -60,8 +60,8 @@ export const ClassDetailScreen: React.FC<ClassDetailModalProps> = ({
   route,
 }) => {
   const video = React.useRef(null);
-  const forceUpdate = useForceUpdate();
-  forceUpdate();
+  const [status1, setStatus] = React.useState({});
+
   const { status, data, error, isFetching } = useClasses(route.params.classId);
   console.log("============ CLASS DETAIL ==========");
   console.log(data);

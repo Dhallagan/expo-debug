@@ -73,13 +73,8 @@ export default function LoginScreen() {
     })
       .then((res) => {
         if (res.signIn?.user) {
-          alert(res.signIn);
           setMe(res.signIn?.user);
-          try {
-            login(res.signIn?.accessToken);
-          } catch (err) {
-            alert(err);
-          }
+          login(res.signIn?.accessToken);
         }
       })
       .catch((errors) => {

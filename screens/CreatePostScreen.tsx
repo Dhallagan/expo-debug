@@ -109,7 +109,6 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
 
   const { mutate: UpsertPost } = useMutation(
     (args: Any) => {
-      alert(args.team);
       var input = {
         team: args.team,
         content: JSON.stringify([

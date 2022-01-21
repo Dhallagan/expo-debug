@@ -14,6 +14,7 @@ import { CardDivider } from "../../components/CardDivider";
 import { color } from "react-native-elements/dist/helpers";
 import { createIconSetFromFontello } from "react-native-vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { endpoint } from "../../constants/httpHelper";
 
 type PostCardProps = {
   post: Any;
@@ -22,12 +23,7 @@ type PostCardProps = {
 };
 
 function resizeURL(img) {
-  return (
-    "https://test.thatclass.co/img/w_" +
-    SCREEN_WIDTH +
-    "/p/" +
-    img.split("/").pop()
-  );
+  return endpoint + SCREEN_WIDTH + "/p/" + img.split("/").pop();
 }
 export function PostCard(props: PostCardProps) {
   const navigation = useNavigation();

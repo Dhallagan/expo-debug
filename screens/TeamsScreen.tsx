@@ -57,7 +57,6 @@ export default function TeamsScreen() {
   let filteredTeams = [];
   if (data) {
     filteredTeams = data.teams.edges.filter((x) => {
-      // alert(JSON.stringify(searchVal));
       return JSON.stringify(x)
         .toLowerCase()
         .includes(search.toString().toLowerCase() || "");
