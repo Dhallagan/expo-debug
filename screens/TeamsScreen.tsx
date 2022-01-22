@@ -12,7 +12,7 @@ import { Loading } from "../components/Loading";
 import { TeamCard } from "../components/TeamCard";
 import { TitledHeader } from "../components/TitledHeader";
 import TitledGradientHeader from "../components/TitleGradientHeader";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 import { endpoint } from "../constants/httpHelper";
 import { SearchInput } from "../components/SearchInput";
 import JsonText from "../components/JsonText";

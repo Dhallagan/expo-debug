@@ -2,7 +2,7 @@ import React from "react";
 import { View, YellowBox } from "react-native";
 import { Avatar } from "react-native-elements";
 import ProgressCircle from "react-native-progress-circle";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 
 export default function ProgressAvatar(props) {
   const { size, style } = props;

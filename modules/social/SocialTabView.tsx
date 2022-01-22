@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import JsonText from "../../components/JsonText";
-import { colors } from "../../constants/dogeStyle";
+import { colors } from "../../constants/appStyle";
 import { useForceUpdate } from "../../core/useForceUpdate";
 import { useCurrentUserStore } from "../../store/useCurrentUserStore";
 import { PostList } from "../feed/Feed";

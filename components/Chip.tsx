@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text } from "react-native";
 import { color } from "react-native-elements/dist/helpers";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 
 export type ChipProps = {
   id: number;
@@ -23,9 +23,9 @@ export const Chip: React.FC<ChipProps> = ({
   return (
     <TouchableOpacity
       style={[
-        (outlined || selectedCategory === id
+        outlined || selectedCategory === id
           ? { backgroundColor: "rgba(255,255,255,0.2)" }
-          : { backgroundColor: "rgba(255,255,255,0.0)" }),
+          : { backgroundColor: "rgba(255,255,255,0.0)" },
         {
           borderRadius: 20,
           borderStyle: "solid",

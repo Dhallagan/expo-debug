@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text } from "react-native";
-import { colors, h4 } from "../constants/dogeStyle";
+import { colors, h4 } from "../constants/appStyle";
 import { TitledHeader } from "../components/TitledHeader";
 
 export default function SettingsScreen() {

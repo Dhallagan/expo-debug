@@ -14,7 +14,7 @@ import {
 import { useQuery } from "react-query";
 import { graphql, useFragment } from "react-relay";
 import JsonText from "../../components/JsonText";
-import { colors } from "../../constants/dogeStyle";
+import { colors } from "../../constants/appStyle";
 import { useTokenStore } from "../../store/useTokenStore";
 import { PostCard } from "./PostCard";
 import { useLike } from "./PostList.hooks";
@@ -76,13 +76,17 @@ export function PostList(props: FeedProps) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         {data.posts?.edges?.map((edge, idx) => {
-          return (
-            <PostCard
-              key={idx}
-              post={edge.post}
-              scope={team ? "user" : "team"}
-            />
-          );
+          try {
+            return (
+              <PostCard
+                key={idx}
+                post={edge.post}
+                scope={team ? "user" : "team"}
+              />
+            );
+          } catch (err) {
+            return null;
+          }
         })}
       </ScrollView>
     );

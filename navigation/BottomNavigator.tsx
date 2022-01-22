@@ -11,7 +11,7 @@ import HomeScreen from "../screens/HomeScreen";
 import ClassesScreen from "../screens/ClassesScreen";
 import { CreatePostScreen } from "../screens/CreatePostScreen";
 import { CreatePostButton } from "../components/bottomBar/CreatePostButton";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 import ProgressAvatar from "../components/ProgressAvatar";
 
 const EmptyComponent: React.FC = () => {

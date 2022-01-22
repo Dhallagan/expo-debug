@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TitledHeader } from "../components/TitledHeader";
-import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
+import { colors, fontFamily, fontSize, radius } from "../constants/appStyle";
 import { Video } from "expo-av";
 import { Chip } from "../components/Chip";
 import { PostCard } from "../modules/feed/PostCard";
@@ -21,6 +21,8 @@ import JsonText from "../components/JsonText";
 import { baseProps } from "react-native-gesture-handler/lib/typescript/handlers/gestureHandlers";
 import { PostCardComment } from "../modules/feed/PostCardComment";
 import ProgressAvatar from "../components/ProgressAvatar";
+import PostCardCommentInput from "../modules/feed/PostCardCommentInput";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface PostDetailProps {
   onRequestClose: () => void;
@@ -39,33 +41,27 @@ export const PostDetailScreen: React.FC<PostDetailProps> = ({
 
   return (
     <>
-      <KeyboardAvoidingView behavior={"padding"} style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <SafeAreaView style={styles.inner}>
-            <TitledHeader showBackButton={true} title={"Comments"} />
+      {/* < */}
+      <SafeAreaView style={styles.container}>
+        <TitledHeader showBackButton={true} title={"Comments"} />
 
-            {/* <PostCard /> */}
-            {/* <JsonText obj={route} /> */}
-            <PostCard post={post}></PostCard>
-            <View
-              style={{
-                backgroundColor: colors.primary800,
-                padding: 10,
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <TextInput
-                placeholderTextColor={"white"}
-                style={styles.textInput}
-                placeholder="Comment"
-                returnKeyType="send"
-                autoFocus={autofocus}
-              />
-            </View>
-          </SafeAreaView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        {/* <PostCard /> */}
+        {/* <JsonText obj={route} /> */}
+        <ScrollView style={{ flex: 1 }}>
+          <PostCard
+            post={post}
+            disableTouchableOpacity={true}
+            commentNum={1000}
+          />
+        </ScrollView>
+        <PostCardCommentInput
+          postId={post.id}
+          post={post}
+          autofocus={autofocus}
+        />
+      </SafeAreaView>
+      {/* </TouchableWithoutFeedback>
+      </KeyboardAvoidingView> */}
     </>
   );
 };

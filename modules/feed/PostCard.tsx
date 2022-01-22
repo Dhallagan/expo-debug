@@ -1,33 +1,36 @@
 import * as React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { Divider } from "react-native-elements";
-import { Card } from "react-native-elements/dist/card/Card";
 import ProgressAvatar from "../../components/ProgressAvatar";
 import { formatDistanceToNowStrict } from "date-fns";
-import JsonText from "../../components/JsonText";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
-import { Button } from "../../components/Button";
-import { colors } from "../../constants/dogeStyle";
+import { SCREEN_WIDTH } from "../../constants";
+import { colors } from "../../constants/appStyle";
 import { PostCardComment } from "./PostCardComment";
 import { Content } from "./Content";
 import { CardDivider } from "../../components/CardDivider";
-import { color } from "react-native-elements/dist/helpers";
-import { createIconSetFromFontello } from "react-native-vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { endpoint } from "../../constants/httpHelper";
 
 type PostCardProps = {
   post: Any;
   scope: String;
+  commentNum: Number;
   onClickLike?: () => void;
+  disableTouchableOpacity: boolean | null | undefined;
 };
 
 function resizeURL(img) {
-  return endpoint + SCREEN_WIDTH + "/p/" + img.split("/").pop();
+  if (img) {
+    return (
+      "https://test.thatclass.co/img/w_" +
+      SCREEN_WIDTH +
+      "/p/" +
+      img.split("/").pop()
+    );
+  }
 }
+
 export function PostCard(props: PostCardProps) {
   const navigation = useNavigation();
-  const { post, scope } = props;
+  const { post, scope, disableTouchableOpacity, commentNum } = props;
   const team = `${post.team.name}`;
   const author = `${post.author?.firstName} ${post.author?.lastName}`;
   const color = `${post.author?.rank}`;
@@ -42,7 +45,6 @@ export function PostCard(props: PostCardProps) {
       setDesiredHeight((SCREEN_WIDTH / width) * height);
     });
   }
-  console.log(JSON.stringify(image));
 
   return (
     <View key={post.id} style={styles.container}>
@@ -81,6 +83,7 @@ export function PostCard(props: PostCardProps) {
                 autofocus: false,
               })
             }
+            disabled={disableTouchableOpacity}
           >
             <Image
               source={image}
@@ -136,6 +139,7 @@ export function PostCard(props: PostCardProps) {
           onPress={() =>
             navigation.navigate("PostDetail", {
               post: post,
+              autofocus: true,
             })
           }
         >
@@ -153,7 +157,7 @@ export function PostCard(props: PostCardProps) {
       <CardDivider />
 
       <View style={{ paddingTop: 5 }}>
-        {post.comments?.map((x, idx) => (
+        {post.comments?.slice(0, commentNum || 3).map((x, idx) => (
           <PostCardComment
             key={idx}
             comment={x}
@@ -205,7 +209,7 @@ const styles = StyleSheet.create({
     color: colors.primary500,
   },
   reactionContainer: {
-    fontSize: 20,
+    fontSize: 18,
     color: "#fff",
     borderColor: colors.primary600,
     borderWidth: 2,

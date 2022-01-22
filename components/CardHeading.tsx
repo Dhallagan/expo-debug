@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { StyleSheet, Text } from "react-native";
-import { paragraphBold } from "../constants/dogeStyle";
+import { paragraphBold } from "../constants/appStyle";
 
 export interface CardHeadingProps {
   icon?: ReactElement;

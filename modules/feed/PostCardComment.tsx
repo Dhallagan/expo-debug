@@ -10,7 +10,7 @@ import {
 import * as React from "react";
 import ProgressAvatar from "../../components/ProgressAvatar";
 import { Content } from "./Content";
-import { colors, radius } from "../../constants/dogeStyle";
+import { colors, radius } from "../../constants/appStyle";
 import { SCREEN_WIDTH } from "../../constants";
 
 type PostCardCommentProps = {

@@ -14,7 +14,7 @@ import {
   fontSize,
   paragraph,
   radius,
-} from "../../constants/dogeStyle";
+} from "../../constants/appStyle";
 import { GenericNotification } from "./GenericNotification";
 
 interface NewRoomNotificationProps {

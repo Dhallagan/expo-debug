@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 
 export type SearchInputProps = {
   value: string;

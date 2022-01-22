@@ -1,12 +1,6 @@
 import React from "react";
-import { colors, radius } from "../constants/dogeStyle";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { colors, radius } from "../constants/appStyle";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { SCREEN_HEIGHT } from "../constants";
 import { Chip } from "../components/Chip";
 
@@ -35,7 +29,7 @@ export const ClassCard: React.FC<ClassCardProps> = ({
       <Text style={styles.title}>{title}</Text>
       <View style={{ flex: 0, flexDirection: "row" }}>
         <Chip title="Mantas" outlined />
-        <Chip title="20m" outlined/>
+        <Chip title="20m" outlined />
       </View>
     </TouchableOpacity>
   );
@@ -73,6 +67,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 5,
     borderColor: "transparent",
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
 });

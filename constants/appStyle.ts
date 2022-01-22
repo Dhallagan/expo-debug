@@ -30,6 +30,7 @@ export const fontSize = {
 
 export const colors = {
   text: "#fff",
+  placeholder: "#e0e0e0",
   primary100: "#dee3ea",
   primary200: "#b2bdcd",
   primary300: "#e0e0e0",

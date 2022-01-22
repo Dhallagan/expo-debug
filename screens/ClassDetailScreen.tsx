@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
 import { TitledHeader } from "../components/TitledHeader";
-import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
+import { colors, fontFamily, fontSize, radius } from "../constants/appStyle";
 import { Video } from "expo-av";
 import { Chip } from "../components/Chip";
 import * as ScreenOrientation from "expo-screen-orientation";

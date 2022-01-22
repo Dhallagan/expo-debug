@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 // import { FollowNotification } from "../../components/notifications/FollowNotification";
 // import { LiveNotification } from "../../components/notifications/LiveNotification";
 import { NewRoomNotification } from "../components/notifications/NewRoomNotification";
-import { colors, h4 } from "../constants/dogeStyle";
+import { colors, h4 } from "../constants/appStyle";
 import { TitledHeader } from "../components/TitledHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 

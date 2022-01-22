@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useMutation, useQuery } from "react-query";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
-import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
+import { colors, fontFamily, fontSize, radius } from "../constants/appStyle";
 import { ErrorMessage, Formik } from "formik";
 import { useTokenStore } from "../store/useTokenStore";
 import { useCreatePostMutation } from "../_generated";
@@ -253,6 +253,7 @@ export const CreatePostScreen: React.FC<CreatePostModalProps> = ({
                 <TouchableOpacity
                   style={styles.postButton}
                   onPress={handleSubmit}
+                  disabled={image && !imageUrl ? true : false}
                 >
                   <Text style={styles.titleText}>Post</Text>
                 </TouchableOpacity>

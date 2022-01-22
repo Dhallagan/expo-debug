@@ -11,12 +11,7 @@ import { ClassOptionsScreen } from "../../screens/ClassOptionsScreen";
 import { CreatePostScreen } from "../../screens/CreatePostScreen";
 import Icon from "react-native-vector-icons/Ionicons";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
-import {
-  colors,
-  fontFamily,
-  fontSize,
-  radius,
-} from "../../constants/dogeStyle";
+import { colors, fontFamily, fontSize, radius } from "../../constants/appStyle";
 import { useQuery } from "react-query";
 import request, { gql } from "graphql-request";
 import { endpoint } from "../../constants/httpHelper";

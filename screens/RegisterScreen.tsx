@@ -11,7 +11,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 
 import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";

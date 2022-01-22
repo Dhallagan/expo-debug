@@ -10,7 +10,7 @@ import {
   TextInput,
 } from "react-native";
 import * as Contacts from "expo-contacts";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 import { TitledHeader } from "../components/TitledHeader";
 import JsonText from "../components/JsonText";
 import { Chip } from "../components/Chip";

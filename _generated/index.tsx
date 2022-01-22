@@ -1212,7 +1212,7 @@ export const useClassesQuery = <
     );
 export const FeedDocument = `
     query Feed($team: String, $user: String) {
-  posts(team: $team, user: $user, first: 2) {
+  posts(team: $team, user: $user, first: 20) {
     edges {
       post: node {
         id
@@ -1228,7 +1228,7 @@ export const FeedDocument = `
         }
         reacted
         commentsCount
-        comments {
+        comments(first: 1000) {
           content
           createdAt
           author {

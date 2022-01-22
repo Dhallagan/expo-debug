@@ -18,7 +18,7 @@ import {
   paragraphBold,
   radius,
   smallBold,
-} from "../constants/dogeStyle";
+} from "../constants/appStyle";
 
 export type ButtonProps = ViewProps & {
   style?: StyleProp<ViewStyle>;

@@ -1,5 +1,5 @@
 import React from "react";
-import { colors, radius } from "../constants/dogeStyle";
+import { colors, radius } from "../constants/appStyle";
 import {
   StyleSheet,
   Text,

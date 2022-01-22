@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
 import { images } from "../assets";
 import Header from "../components/Header";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 import BottomNavigator from "../navigation/BottomNavigator";
 
 export default function MainScreen() {

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
 import { images } from "../../assets";
-import { colors, fontSize } from "../../constants/dogeStyle";
+import { colors, fontSize } from "../../constants/appStyle";
 import { ClassOptionsButton } from "../../components/bottomBar/ClassOptionsButton";
 import { ProfileSettingsButton } from "./ProfileSettingsButton";
 import GradientText from "../../components/GradientText";

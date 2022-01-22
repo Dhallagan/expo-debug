@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
-import { colors, radius } from "../constants/dogeStyle";
+import { colors, radius } from "../constants/appStyle";
 
 export function CardDivider(props) {
   return <View style={styles.divider} />;

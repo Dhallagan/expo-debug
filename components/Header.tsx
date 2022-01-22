@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/Ionicons";
 import { images } from "../assets";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 
 export default function Header() {
   const navigation = useNavigation();

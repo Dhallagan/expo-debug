@@ -27,7 +27,7 @@ import { TeamCard } from "../components/TeamCard";
 import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
-import { colors, fontSize } from "../constants/dogeStyle";
+import { colors, fontSize } from "../constants/appStyle";
 import { endpoint } from "../constants/httpHelper";
 import { PostList } from "../modules/feed/Feed";
 import SocialTabView from "../modules/social/SocialTabView";
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "white",
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 18,
     padding: 5,
     // alignSelf: "center",
   },

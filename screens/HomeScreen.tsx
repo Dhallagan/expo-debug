@@ -18,7 +18,7 @@ import { TeamCard } from "../components/TeamCard";
 import { TitledHeader } from "../components/TitledHeader";
 import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_WIDTH } from "../constants";
-import { colors, fontSize } from "../constants/dogeStyle";
+import { colors, fontSize } from "../constants/appStyle";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
 import { useTokenStore } from "../store/useTokenStore";
 import { useNavigation } from "@react-navigation/native";

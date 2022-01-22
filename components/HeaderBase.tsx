@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 // import { colors } from "../../constants/dogeStyle";
 
 export type HeaderBaseProps = ViewProps & {

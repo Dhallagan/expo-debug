@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-} from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors, fontFamily, fontSize, radius } from "../constants/dogeStyle";
+import { colors, fontFamily, fontSize, radius } from "../constants/appStyle";
 
 interface ClassOptionsModalProps {
   onRequestClose: () => void;
@@ -21,43 +17,44 @@ export const ClassOptionsScreen: React.FC<ClassOptionsModalProps> = ({
   title,
 }) => {
   const inset = useSafeAreaInsets();
-  const [isRefresh, setIsRefresh]  = useState(false);
+  const [isRefresh, setIsRefresh] = useState(false);
   useEffect(() => {
     // console.log(isRefresh);
-  }, [isRefresh])
+  }, [isRefresh]);
 
   return (
-      <View >
-        <Text style={styles.titleText}>{title}</Text>
-        <View>
-          <View style={{ display: "flex", width: "100%" }}>
-            {checkFilter && checkFilter.map((item, index) => (
+    <View>
+      <Text style={styles.titleText}>{title}</Text>
+      <View>
+        <View style={{ display: "flex", width: "100%" }}>
+          {checkFilter &&
+            checkFilter.map((item, index) => (
               <View style={{ flex: 0, flexDirection: "row" }} key={index}>
-              <Text
-                style={{
-                  flex: 1,
-                  color: "white",
-                  fontSize: fontSize.paragraph,
-                  alignSelf: "center",
-                }}
-              >
-                {item.label}
-              </Text>
-              <CheckBox 
-                style={styles.checkbox}
-                checked={item.checked}
-                checkedColor="white"
-                uncheckedColor="white"
-                onPress={() => {
-                  onChecked(index);
-                  setIsRefresh(!isRefresh);
-                }}
-              />
-            </View>
+                <Text
+                  style={{
+                    flex: 1,
+                    color: "white",
+                    fontSize: fontSize.paragraph,
+                    alignSelf: "center",
+                  }}
+                >
+                  {item.label}
+                </Text>
+                <CheckBox
+                  style={styles.checkbox}
+                  checked={item.checked}
+                  checkedColor="white"
+                  uncheckedColor="white"
+                  onPress={() => {
+                    onChecked(index);
+                    setIsRefresh(!isRefresh);
+                  }}
+                />
+              </View>
             ))}
-          </View>
         </View>
       </View>
+    </View>
   );
 };
 

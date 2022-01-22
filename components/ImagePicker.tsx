@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, Image, View, Platform, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "react-native-vector-icons/Ionicons";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 import request, { gql } from "graphql-request";
 import { useMutation } from "react-query";
 import * as FileSystem from "expo-file-system";

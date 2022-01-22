@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Chip } from "../components/Chip";
 import { ClassCard } from "../components/ClassCard";
 import ClassHeader from "../components/ClassHeader";
-import { colors, fontSize } from "../constants/dogeStyle";
+import { colors, fontSize } from "../constants/appStyle";
 import TitledGradientHeader from "../components/TitleGradientHeader";
 // import { useClasses } from "../queries";
 import JsonText from "../components/JsonText";

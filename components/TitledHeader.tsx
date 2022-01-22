@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text } from "react-native";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 // import { h4 } from "../../constants/dogeStyle";
 import { HeaderBase } from "./HeaderBase";
 

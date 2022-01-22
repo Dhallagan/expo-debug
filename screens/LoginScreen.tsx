@@ -11,7 +11,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
 // import { } from "../store/useTokenStore";
 import { useNavigation } from "@react-navigation/core";
 import { LinearGradient } from "expo-linear-gradient";
@@ -139,7 +139,7 @@ export default function LoginScreen() {
               <TextInput
                 style={Styles.userNameInput}
                 placeholder="Username or email"
-                placeholderTextColor={"white"}
+                placeholderTextColor={colors.placeholder}
                 onChangeText={handleChange("username")}
                 onBlur={handleBlur("username")}
                 value={values.username}
@@ -155,7 +155,7 @@ export default function LoginScreen() {
                 secureTextEntry={true}
                 style={Styles.passwordInput}
                 placeholder="Password"
-                placeholderTextColor={"white"}
+                placeholderTextColor={colors.placeholder}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 value={values.password}
@@ -247,7 +247,7 @@ const Styles = StyleSheet.create({
     // marginBottom: 20,
   },
   userNameInput: {
-    fontSize: 20,
+    fontSize: 18,
     marginStart: 10,
     color: "white",
   },
@@ -269,7 +269,7 @@ const Styles = StyleSheet.create({
     marginEnd: 20,
     marginBottom: 20,
   },
-  passwordInput: { fontSize: 20, marginStart: 10, color: "white" },
+  passwordInput: { fontSize: 18, marginStart: 10, color: "white" },
   forgotPasswordContainer: {
     alignItems: "flex-end",
     marginEnd: 20,

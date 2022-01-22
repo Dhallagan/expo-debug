@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { colors, fontSize } from "../constants/dogeStyle";
+import { colors, fontSize } from "../constants/appStyle";
 
 export function Loading() {
   return (

@@ -7,14 +7,15 @@ import { useQuery } from "react-query";
 // import { useQuery } from "urql";
 import { TeamCard } from "../components/TeamCard";
 import TitledGradientHeader from "../components/TitleGradientHeader";
-import { colors } from "../constants/dogeStyle";
+import { colors } from "../constants/appStyle";
+import { endpoint } from "../constants/httpHelper";
 import { PostList } from "../modules/feed/Feed";
 import SocialTabView from "../modules/social/SocialTabView";
 
 function useTeams() {
   return useQuery("teams", async () => {
     return await request(
-      "https://test.thatclass.co/api/",
+      endpoint,
       gql`
         query {
           teams {
