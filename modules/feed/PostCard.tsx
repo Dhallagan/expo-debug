@@ -8,6 +8,9 @@ import { PostCardComment } from "./PostCardComment";
 import { Content } from "./Content";
 import { CardDivider } from "../../components/CardDivider";
 import { useNavigation } from "@react-navigation/native";
+import { endpoint } from "../../constants/httpHelper";
+import request, { gql } from "graphql-request";
+import { useMutation } from "react-query";
 
 type PostCardProps = {
   post: Any;
@@ -28,9 +31,20 @@ function resizeURL(img) {
   }
 }
 
+const LIKE_MUTATION = gql`
+  mutation PostListLikeMutation($postId: ID!, $reaction: Reaction!) {
+    react(postId: $postId, reaction: $reaction) {
+      post {
+        id
+      }
+    }
+  }
+`;
+
 export function PostCard(props: PostCardProps) {
   const navigation = useNavigation();
-  const { post, scope, disableTouchableOpacity, commentNum } = props;
+  const { post, scope, disableTouchableOpacity, commentNum, onClickLike } =
+    props;
   const team = `${post.team.name}`;
   const author = `${post.author?.firstName} ${post.author?.lastName}`;
   const color = `${post.author?.rank}`;
@@ -38,6 +52,20 @@ export function PostCard(props: PostCardProps) {
   const teamLink = `/t/${post.team.slug}`;
   const authorLink = `/@${post.author?.username}`;
   const image = { uri: resizeURL(post.media.url) };
+
+  const likeMutation = useMutation((id) => {
+    // alert("clickLike" + JSON.stringify(id));
+    return request(endpoint, LIKE_MUTATION, {
+      postId: id,
+      reaction: "HighFive",
+    })
+      .then((res) => {
+        JSON.stringify(res);
+      })
+      .catch((errors) => {
+        alert(JSON.stringify(errors));
+      });
+  });
 
   const [desiredHeight, setDesiredHeight] = React.useState(0);
   if (post.media.url) {
@@ -113,6 +141,7 @@ export function PostCard(props: PostCardProps) {
             paddingVertical: 5,
             borderRadius: 10,
           }}
+          onPress={() => likeMutation.mutate(post.id)}
         >
           <Text style={{ color: "#fff", fontSize: 14 }}>✋</Text>
           {post.reactions.highFives ? (

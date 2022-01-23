@@ -17,7 +17,6 @@ import JsonText from "../../components/JsonText";
 import { colors } from "../../constants/appStyle";
 import { useTokenStore } from "../../store/useTokenStore";
 import { PostCard } from "./PostCard";
-import { useLike } from "./PostList.hooks";
 import { useFeedQuery } from "../../_generated";
 import { QueryClient } from "../../core/QueryClient";
 import { Loading } from "../../components/Loading";
@@ -56,9 +55,6 @@ export function PostList(props: FeedProps) {
   console.log("============= FEED =======================");
   console.log(data);
   console.log("====================================");
-
-  // const { posts } = useFragment(postsFragment, rootRef);
-  // const like = useLike();
 
   if (status === "loading") {
     return <Loading />;
