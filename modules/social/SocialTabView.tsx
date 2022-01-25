@@ -5,7 +5,7 @@ import JsonText from "../../components/JsonText";
 import { colors } from "../../constants/appStyle";
 import { useForceUpdate } from "../../core/useForceUpdate";
 import { useCurrentUserStore } from "../../store/useCurrentUserStore";
-import { PostList } from "../feed/Feed";
+import { PostList } from "../feed/PostList";
 
 function FirstRoute() {
   let { me } = useCurrentUserStore();

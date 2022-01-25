@@ -29,7 +29,7 @@ import { UpcomingCard } from "../components/UpcomingCard";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { colors, fontSize } from "../constants/appStyle";
 import { endpoint } from "../constants/httpHelper";
-import { PostList } from "../modules/feed/Feed";
+import { PostList } from "../modules/feed/PostList";
 import SocialTabView from "../modules/social/SocialTabView";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
 import { useTokenStore } from "../store/useTokenStore";

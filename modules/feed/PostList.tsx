@@ -76,7 +76,7 @@ export function PostList(props: FeedProps) {
           try {
             return (
               <PostCard
-                key={idx}
+                key={edge.post.id}
                 post={edge.post}
                 scope={team ? "user" : "team"}
               />

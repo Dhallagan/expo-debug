@@ -128,8 +128,8 @@ export default function LoginScreen() {
 
       <Formik
         initialValues={{
-          username: "",
-          password: "",
+          username: "dhallagan",
+          password: "password",
         }}
         onSubmit={(values) => mutation.mutate(values)}
       >

@@ -9,7 +9,7 @@ import { TeamCard } from "../components/TeamCard";
 import TitledGradientHeader from "../components/TitleGradientHeader";
 import { colors } from "../constants/appStyle";
 import { endpoint } from "../constants/httpHelper";
-import { PostList } from "../modules/feed/Feed";
+import { PostList } from "../modules/feed/PostList";
 import SocialTabView from "../modules/social/SocialTabView";
 
 function useTeams() {

@@ -15,7 +15,7 @@ import ProgressAvatar from "../components/ProgressAvatar";
 import { TitledHeader } from "../components/TitledHeader";
 import TitledGradientHeader from "../components/TitleGradientHeader";
 import { colors, fontSize } from "../constants/appStyle";
-import { PostList } from "../modules/feed/Feed";
+import { PostList } from "../modules/feed/PostList";
 import { useTokenStore } from "../store/useTokenStore";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";

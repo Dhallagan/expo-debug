@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -35,30 +35,40 @@ export const PostDetailScreen: React.FC<PostDetailProps> = ({
   // post,
   route,
 }) => {
-  let post = route.params.post;
+  const [post, setPost] = useState(null);
+  // let post = route.params.post;
   let autofocus = route.params.autofocus;
   const inset = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (route.params.post) {
+      setPost(route.params.post);
+    }
+  }, [route.params.post]);
 
   return (
     <>
       {/* < */}
-      <SafeAreaView style={styles.container}>
-        <TitledHeader showBackButton={true} title={"Comments"} />
+      {post && (
+        <SafeAreaView style={styles.container}>
+          <TitledHeader showBackButton={true} title={"Comments"} />
 
-        <ScrollView style={{ flex: 1 }}>
-          <PostCard
-            key={post.id}
+          <ScrollView style={{ flex: 1 }}>
+            <PostCard
+              key={post?.id}
+              post={post}
+              disableTouchableOpacity={true}
+              commentNum={1000}
+            />
+          </ScrollView>
+          <PostCardCommentInput
+            postId={post?.id}
             post={post}
-            disableTouchableOpacity={true}
-            commentNum={1000}
+            setPost={setPost}
+            autofocus={autofocus}
           />
-        </ScrollView>
-        <PostCardCommentInput
-          postId={post.id}
-          post={post}
-          autofocus={autofocus}
-        />
-      </SafeAreaView>
+        </SafeAreaView>
+      )}
     </>
   );
 };

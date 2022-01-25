@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useFeedQuery } from "../../_generated";
 import { colors } from "../../constants/appStyle";
 // import { } from "../store/useTokenStore";
 import { useNavigation } from "@react-navigation/core";
@@ -54,17 +55,23 @@ export default function PostCardCommentInput({
   parentId = null,
   autofocus = false,
   post = null,
+  setPost,
 }) {
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const client = QueryClient();
 
+  const key = useFeedQuery.getKey({ id: post.id });
   const { mutate } = usePostCardCommentMutationMutation(client, {
     onSuccess: (res) => {
       setContent("");
       let newComment = res.upsertComment.comment;
-      console.log(post.comments);
-      post.comments.push(newComment);
+      let newPost = res.upsertComment.post;
+      const postCopy = { ...post };
+      postCopy.comments.push(newComment);
+      postCopy.commentsCount = newPost.commentsCount;
+      setPost(postCopy);
+      // queryClient.setQueryData("Feed", post.id)
     },
     onError: (err) => {
       console.log(err);

@@ -1210,6 +1210,10 @@ export const useClassesQuery = <
       fetcher<ClassesQuery, ClassesQueryVariables>(client, ClassesDocument, variables, headers),
       options
     );
+
+useClassesQuery.getKey = (variables?: ClassesQueryVariables) => variables === undefined ? ['Classes'] : ['Classes', variables];
+;
+
 export const FeedDocument = `
     query Feed($team: String, $user: String) {
   posts(team: $team, user: $user, first: 20) {
@@ -1278,6 +1282,10 @@ export const useFeedQuery = <
       fetcher<FeedQuery, FeedQueryVariables>(client, FeedDocument, variables, headers),
       options
     );
+
+useFeedQuery.getKey = (variables?: FeedQueryVariables) => variables === undefined ? ['Feed'] : ['Feed', variables];
+;
+
 export const PostCardCommentMutationDocument = `
     mutation PostCardCommentMutation($input: UpsertCommentInput!) {
   upsertComment(input: $input) {
