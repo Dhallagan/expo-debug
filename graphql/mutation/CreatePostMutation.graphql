@@ -1,9 +1,0 @@
-mutation CreatePostCardMutation($input: UpsertPostInput!) {
-  upsertPost(input: $input) {
-    postEdge {
-      node {
-        id
-      }
-    }
-  }
-}

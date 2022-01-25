@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { endpoint } from "../../constants/httpHelper";
 import request, { gql } from "graphql-request";
 import { useMutation } from "react-query";
+import PostCardCommentInput from "./PostCardCommentInput";
 
 type PostCardProps = {
   post: Any;
@@ -36,6 +37,38 @@ const LIKE_MUTATION = gql`
     react(postId: $postId, reaction: $reaction) {
       post {
         id
+        title
+        content
+        media {
+          url
+        }
+        reactions {
+          likes
+          highFives
+          fistBumps
+        }
+        reacted
+        commentsCount
+        comments {
+          id
+        }
+        createdAt
+        author {
+          id
+          username
+          firstName
+          lastName
+          picture {
+            url
+          }
+          rank
+          rankProgress
+        }
+        team {
+          id
+          slug
+          name
+        }
       }
     }
   }
@@ -54,13 +87,12 @@ export function PostCard(props: PostCardProps) {
   const image = { uri: resizeURL(post.media.url) };
 
   const likeMutation = useMutation((id) => {
-    // alert("clickLike" + JSON.stringify(id));
     return request(endpoint, LIKE_MUTATION, {
       postId: id,
       reaction: "HighFive",
     })
       .then((res) => {
-        JSON.stringify(res);
+        post.reactions = res.react.post.reactions;
       })
       .catch((errors) => {
         alert(JSON.stringify(errors));
@@ -187,11 +219,7 @@ export function PostCard(props: PostCardProps) {
 
       <View style={{ paddingTop: 5 }}>
         {post.comments?.slice(0, commentNum || 3).map((x, idx) => (
-          <PostCardComment
-            key={idx}
-            comment={x}
-            // onClickDelete={state.handleClickDelete}
-          />
+          <PostCardComment key={idx} comment={x} />
         ))}
       </View>
     </View>

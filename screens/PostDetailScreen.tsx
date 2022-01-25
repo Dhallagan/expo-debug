@@ -45,10 +45,9 @@ export const PostDetailScreen: React.FC<PostDetailProps> = ({
       <SafeAreaView style={styles.container}>
         <TitledHeader showBackButton={true} title={"Comments"} />
 
-        {/* <PostCard /> */}
-        {/* <JsonText obj={route} /> */}
         <ScrollView style={{ flex: 1 }}>
           <PostCard
+            key={post.id}
             post={post}
             disableTouchableOpacity={true}
             commentNum={1000}
@@ -60,8 +59,6 @@ export const PostDetailScreen: React.FC<PostDetailProps> = ({
           autofocus={autofocus}
         />
       </SafeAreaView>
-      {/* </TouchableWithoutFeedback>
-      </KeyboardAvoidingView> */}
     </>
   );
 };

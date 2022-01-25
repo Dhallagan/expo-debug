@@ -1168,12 +1168,12 @@ export type FeedQueryVariables = Exact<{
 
 export type FeedQuery = { __typename?: 'Root', posts?: { __typename?: 'PostConnection', edges?: Array<{ __typename?: 'PostEdge', post?: { __typename?: 'Post', id: string, title: string, content: string, reacted?: Array<Reaction> | null | undefined, commentsCount: number, createdAt?: string | null | undefined, media: { __typename?: 'Picture', url?: string | null | undefined }, reactions: { __typename?: 'Reactions', likes: number, highFives: number, fistBumps: number }, comments: Array<{ __typename?: 'Comment', content: string, createdAt?: string | null | undefined, author: { __typename?: 'User', username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } } }>, author: { __typename?: 'User', id: string, username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } }, team: { __typename?: 'Team', id: string, slug: string, name: string } } | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
-export type CreatePostCardMutationMutationVariables = Exact<{
-  input: UpsertPostInput;
+export type PostCardCommentMutationMutationVariables = Exact<{
+  input: UpsertCommentInput;
 }>;
 
 
-export type CreatePostCardMutationMutation = { __typename?: 'Mutation', upsertPost?: { __typename?: 'UpsertPostPayload', postEdge?: { __typename?: 'PostEdge', node?: { __typename?: 'Post', id: string } | null | undefined } | null | undefined } | null | undefined };
+export type PostCardCommentMutationMutation = { __typename?: 'Mutation', upsertComment?: { __typename?: 'UpsertCommentPayload', post?: { __typename?: 'Post', id: string, commentsCount: number } | null | undefined, comment?: { __typename?: 'Comment', id: string, content: string, createdAt?: string | null | undefined, author: { __typename?: 'User', username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } } } | null | undefined } | null | undefined };
 
 
 export const ClassesDocument = `
@@ -1278,27 +1278,41 @@ export const useFeedQuery = <
       fetcher<FeedQuery, FeedQueryVariables>(client, FeedDocument, variables, headers),
       options
     );
-export const CreatePostCardMutationDocument = `
-    mutation CreatePostCardMutation($input: UpsertPostInput!) {
-  upsertPost(input: $input) {
-    postEdge {
-      node {
-        id
+export const PostCardCommentMutationDocument = `
+    mutation PostCardCommentMutation($input: UpsertCommentInput!) {
+  upsertComment(input: $input) {
+    post {
+      id
+      commentsCount
+    }
+    comment {
+      id
+      content
+      createdAt
+      author {
+        username
+        firstName
+        lastName
+        picture {
+          url
+        }
+        rank
+        rankProgress
       }
     }
   }
 }
     `;
-export const useCreatePostCardMutationMutation = <
+export const usePostCardCommentMutationMutation = <
       TError = unknown,
       TContext = unknown
     >(
       client: GraphQLClient,
-      options?: UseMutationOptions<CreatePostCardMutationMutation, TError, CreatePostCardMutationMutationVariables, TContext>,
+      options?: UseMutationOptions<PostCardCommentMutationMutation, TError, PostCardCommentMutationMutationVariables, TContext>,
       headers?: RequestInit['headers']
     ) =>
-    useMutation<CreatePostCardMutationMutation, TError, CreatePostCardMutationMutationVariables, TContext>(
-      'CreatePostCardMutation',
-      (variables?: CreatePostCardMutationMutationVariables) => fetcher<CreatePostCardMutationMutation, CreatePostCardMutationMutationVariables>(client, CreatePostCardMutationDocument, variables, headers)(),
+    useMutation<PostCardCommentMutationMutation, TError, PostCardCommentMutationMutationVariables, TContext>(
+      'PostCardCommentMutation',
+      (variables?: PostCardCommentMutationMutationVariables) => fetcher<PostCardCommentMutationMutation, PostCardCommentMutationMutationVariables>(client, PostCardCommentMutationDocument, variables, headers)(),
       options
     );

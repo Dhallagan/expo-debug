@@ -20,39 +20,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { images } from "../assets/";
 import { ErrorMessage, Form, Formik } from "formik";
 import { Button } from "../components/Button";
-import { useLoginStore, useTokenStore } from "../store/useTokenStore";
-import { useSignIn } from "../queries";
-import { useMutation } from "react-query";
+import { useTokenStore } from "../../store/useTokenStore";
+import { useMutation, useQueryClient } from "react-query";
 import request, { gql } from "graphql-request";
 import JsonText from "../../components/JsonText";
 import { useCurrentUserStore } from "../store/useCurrentUserStore";
 import { endpoint } from "../../constants/httpHelper";
 
-const COMMENT_MUTATION = gql`
-  mutation PostCardCommentMutation($input: UpsertCommentInput!) {
-    upsertComment(input: $input) {
-      post {
-        id
-        commentsCount
-      }
-      comment {
-        id
-        content
-        createdAt
-        author {
-          username
-          firstName
-          lastName
-          picture {
-            url
-          }
-          rank
-          rankProgress
-        }
-      }
-    }
-  }
-`;
+import { usePostCardCommentMutationMutation } from "../../_generated";
+import { QueryClient } from "../../core/QueryClient";
+import { CommonActions } from "@react-navigation/native";
 
 type UpsertCommentInput = {
   id?: string | null | undefined;
@@ -78,45 +55,21 @@ export default function PostCardCommentInput({
   autofocus = false,
   post = null,
 }) {
+  const queryClient = useQueryClient();
   const [content, setContent] = useState("");
+  const client = QueryClient();
 
-  const mutation = useMutation((args: UpsertCommentInput) => {
-    var input = {
-      id: null,
-      postId: args.postId,
-      parentId: null,
-      content: JSON.stringify([
-        {
-          type: "paragraph",
-          children: [{ text: args.content }],
-        },
-      ]),
-    };
-
-    return request(endpoint, COMMENT_MUTATION, {
-      input: input,
-    })
-      .then((res) => {
-        //push comment onto post
-        setContent("");
-        let updatedPost = res.upsertComment.comment;
-        alert(JSON.stringify(updatedPost));
-        post.comments.push(res.upsertComment.comment);
-      })
-      .catch((errors) => {
-        alert(JSON.stringify(errors));
-        //   const err = errors.response.errors?.[0];
-        //   setState((prev) => ({
-        //     ...prev,
-        //     errors: err?.errors ?? (err ? { _: [err.message] } : {}),
-        //   }));
-      });
+  const { mutate } = usePostCardCommentMutationMutation(client, {
+    onSuccess: (res) => {
+      setContent("");
+      let newComment = res.upsertComment.comment;
+      console.log(post.comments);
+      post.comments.push(newComment);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
   });
-
-  // function handleSubmit(input) {
-  //   alert(JSON.stringify(input));
-  //   // mutation.mutate(input);
-  // }
 
   return (
     <KeyboardAvoidingView behavior={"padding"} style={styles.container}>
@@ -138,12 +91,18 @@ export default function PostCardCommentInput({
             returnKeyType="send"
             onChangeText={setContent}
             onSubmitEditing={(event) => {
-              // alert(event);
-              mutation.mutate({
-                id: null,
-                content: content,
-                postId: postId,
-                parentId: parentId,
+              mutate({
+                input: {
+                  id: null,
+                  content: JSON.stringify([
+                    {
+                      type: "paragraph",
+                      children: [{ text: content }],
+                    },
+                  ]),
+                  postId: postId,
+                  parentId: parentId,
+                },
               });
             }}
           />
@@ -166,9 +125,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   container: {
-    // flex: 1,
     justifyContent: "center",
-    backgroundColor: "red",
   },
   logoContainer: {
     alignItems: "center",

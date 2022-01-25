@@ -1,0 +1,23 @@
+mutation PostCardCommentMutation($input: UpsertCommentInput!) {
+  upsertComment(input: $input) {
+    post {
+      id
+      commentsCount
+    }
+    comment {
+      id
+      content
+      createdAt
+      author {
+        username
+        firstName
+        lastName
+        picture {
+          url
+        }
+        rank
+        rankProgress
+      }
+    }
+  }
+}

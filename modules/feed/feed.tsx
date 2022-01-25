@@ -20,6 +20,7 @@ import { PostCard } from "./PostCard";
 import { useFeedQuery } from "../../_generated";
 import { QueryClient } from "../../core/QueryClient";
 import { Loading } from "../../components/Loading";
+import { useForceUpdate } from "../../core/useForceUpdate";
 
 type FeedProps = {
   team?: String | undefined;
@@ -52,9 +53,9 @@ export function PostList(props: FeedProps) {
     after: 0,
   });
 
-  console.log("============= FEED =======================");
-  console.log(data);
-  console.log("====================================");
+  // console.log("============= FEED =============");
+  // console.log(data);
+  // console.log("================================");
 
   if (status === "loading") {
     return <Loading />;

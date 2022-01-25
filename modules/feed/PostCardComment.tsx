@@ -19,7 +19,7 @@ type PostCardCommentProps = {
 
 export function PostCardComment(props: PostCardCommentProps) {
   const { comment } = props;
-  const author = `${comment.author.firstName} ${comment.author.lastName}`;
+  // const author = `${comment.author.firstName} ${comment.author.lastName}`;
   const authorLink = `/@${comment.author?.username}`;
 
   const timeToNow = formatDistanceToNowStrict(
