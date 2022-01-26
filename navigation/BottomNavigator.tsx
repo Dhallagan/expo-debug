@@ -7,7 +7,7 @@ import PostScreen from "../screens/PostScreen";
 import NotificationsScreen from "../screens/SettingsScreen";
 import Icon from "react-native-vector-icons/Ionicons";
 import FeedScreen from "../screens/FeedScreen";
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import ClassesScreen from "../screens/ClassesScreen";
 import { CreatePostScreen } from "../screens/CreatePostScreen";
 import { CreatePostButton } from "../components/bottomBar/CreatePostButton";

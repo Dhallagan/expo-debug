@@ -57,21 +57,23 @@ export default function PostCardCommentInput({
   post = null,
   setPost,
 }) {
-  const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const client = QueryClient();
-
-  const key = useFeedQuery.getKey({ id: post.id });
+  const queryClient = useQueryClient();
+  // alert(JSON.stringify(key));
   const { mutate } = usePostCardCommentMutationMutation(client, {
     onSuccess: (res) => {
       setContent("");
-      let newComment = res.upsertComment.comment;
       let newPost = res.upsertComment.post;
-      const postCopy = { ...post };
-      postCopy.comments.push(newComment);
-      postCopy.commentsCount = newPost.commentsCount;
-      setPost(postCopy);
-      // queryClient.setQueryData("Feed", post.id)
+      setPost(newPost);
+      const key = useFeedQuery.getKey({ id: newPost.id });
+
+      try {
+        queryClient.setQueryData(key, newPost);
+        queryClient.invalidateQueries("Feed");
+      } catch (err) {
+        console.log(err);
+      }
     },
     onError: (err) => {
       console.log(err);

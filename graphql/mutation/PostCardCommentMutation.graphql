@@ -2,7 +2,49 @@ mutation PostCardCommentMutation($input: UpsertCommentInput!) {
   upsertComment(input: $input) {
     post {
       id
+      title
+      content
+      media {
+        url
+      }
+      reactions {
+        likes
+        highFives
+        fistBumps
+      }
+      reacted
       commentsCount
+      comments(first: 1000) {
+        content
+        createdAt
+        author {
+          username
+          firstName
+          lastName
+          picture {
+            url
+          }
+          rank
+          rankProgress
+        }
+      }
+      createdAt
+      author {
+        id
+        username
+        firstName
+        lastName
+        picture {
+          url
+        }
+        rank
+        rankProgress
+      }
+      team {
+        id
+        slug
+        name
+      }
     }
     comment {
       id

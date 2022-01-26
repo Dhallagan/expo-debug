@@ -1173,7 +1173,7 @@ export type PostCardCommentMutationMutationVariables = Exact<{
 }>;
 
 
-export type PostCardCommentMutationMutation = { __typename?: 'Mutation', upsertComment?: { __typename?: 'UpsertCommentPayload', post?: { __typename?: 'Post', id: string, commentsCount: number } | null | undefined, comment?: { __typename?: 'Comment', id: string, content: string, createdAt?: string | null | undefined, author: { __typename?: 'User', username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } } } | null | undefined } | null | undefined };
+export type PostCardCommentMutationMutation = { __typename?: 'Mutation', upsertComment?: { __typename?: 'UpsertCommentPayload', post?: { __typename?: 'Post', id: string, title: string, content: string, reacted?: Array<Reaction> | null | undefined, commentsCount: number, createdAt?: string | null | undefined, media: { __typename?: 'Picture', url?: string | null | undefined }, reactions: { __typename?: 'Reactions', likes: number, highFives: number, fistBumps: number }, comments: Array<{ __typename?: 'Comment', content: string, createdAt?: string | null | undefined, author: { __typename?: 'User', username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } } }>, author: { __typename?: 'User', id: string, username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } }, team: { __typename?: 'Team', id: string, slug: string, name: string } } | null | undefined, comment?: { __typename?: 'Comment', id: string, content: string, createdAt?: string | null | undefined, author: { __typename?: 'User', username?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, rank?: string | null | undefined, rankProgress?: number | null | undefined, picture: { __typename?: 'Picture', url?: string | null | undefined } } } | null | undefined } | null | undefined };
 
 
 export const ClassesDocument = `
@@ -1291,7 +1291,49 @@ export const PostCardCommentMutationDocument = `
   upsertComment(input: $input) {
     post {
       id
+      title
+      content
+      media {
+        url
+      }
+      reactions {
+        likes
+        highFives
+        fistBumps
+      }
+      reacted
       commentsCount
+      comments(first: 1000) {
+        content
+        createdAt
+        author {
+          username
+          firstName
+          lastName
+          picture {
+            url
+          }
+          rank
+          rankProgress
+        }
+      }
+      createdAt
+      author {
+        id
+        username
+        firstName
+        lastName
+        picture {
+          url
+        }
+        rank
+        rankProgress
+      }
+      team {
+        id
+        slug
+        name
+      }
     }
     comment {
       id
